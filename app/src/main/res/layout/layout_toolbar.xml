@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_toolbar_back"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_toolbar_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_back" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_toolbar_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:layout_toRightOf="@+id/rl_toolbar_back"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="3dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_search" />
+
+            <TextView
+                android:id="@+id/tv_search_Enable"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:hint="搜索"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:visibility="gone" />
+
+            <com.pandadentist.widget.CancelEditTextView
+                android:id="@+id/et_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/ic_search_cancel"
+                android:gravity="center_vertical"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/text_color_light_gray2"
+                android:textSize="15sp" />
+
+            <!--<EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/text_color_light_gray2"
+            android:gravity="center_vertical"
+            android:imeOptions="actionSearch"
+            android:visibility="visible"
+            android:inputType="text"
+            android:textSize="15sp"
+            android:hint="搜索附近的农庄" />-->
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_toolbar_func"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:visibility="gone"
+            android:textSize="13sp"
+            android:id="@+id/tv_toolbar_yes"
+            android:textColor="@android:color/white"
+            android:text="确定"
+             android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <ImageView
+            android:id="@+id/iv_toolbar_func"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:id="@+id/tv_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+</RelativeLayout>

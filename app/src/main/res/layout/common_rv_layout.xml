@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/layout_appbar" />
+
+    <com.pandadentist.widget.MultiSwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.pandadentist.widget.EmptyRecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp" />
+    </com.pandadentist.widget.MultiSwipeRefreshLayout>
+
+
+
+</LinearLayout>

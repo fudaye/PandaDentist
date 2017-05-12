@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:text="综合排序"
+        android:layout_marginLeft="13dp"
+        android:textColor="@android:color/white" />
+
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="20dp"
+        android:layout_height="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_gravity="right|center_vertical"
+         />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/lineColor" />
+
+</FrameLayout>

@@ -1,0 +1,103 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        applicationId rootProject.ext.android.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+        multiDexEnabled true
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+
+    lintOptions {
+        disable 'MissingTranslation', 'ExtraTranslation'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+repositories {
+    maven { url "https://jitpack.io" }
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:24.2.0'
+    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
+    compile rootProject.ext.dependencies["appcompat-v7"]
+    compile rootProject.ext.dependencies["cardview"]
+    compile rootProject.ext.dependencies["design"]
+    compile rootProject.ext.dependencies["recyclerview-v7"]
+    compile rootProject.ext.dependencies["retrofit-gson"]
+    compile rootProject.ext.dependencies["ahbottomnavigation"]
+    compile rootProject.ext.dependencies["nineoldandroids"]
+    compile rootProject.ext.dependencies["picasso"]
+    compile rootProject.ext.dependencies["photoview"]
+    compile rootProject.ext.dependencies["numberprogressbar"]
+    compile rootProject.ext.dependencies["umeng-analytics"]
+    compile rootProject.ext.dependencies["retrofit"]
+    compile rootProject.ext.dependencies["rxandroid"]
+    compile rootProject.ext.dependencies["okhttp-urlconnection"]
+    compile rootProject.ext.dependencies["okhttp"]
+    compile rootProject.ext.dependencies["butterknife"]
+    compile rootProject.ext.dependencies["slider"]
+    compile rootProject.ext.dependencies["glide"]
+    compile rootProject.ext.dependencies["rxjava"]
+    compile rootProject.ext.dependencies["retrofit-adapter"]
+    compile rootProject.ext.dependencies["cptr"]
+    compile rootProject.ext.dependencies["stgv"]
+    compile rootProject.ext.dependencies["circleimageview"]
+    compile rootProject.ext.dependencies["infinitecycleviewpager"]
+    compile rootProject.ext.dependencies["tackphoto"]
+    compile rootProject.ext.dependencies["bottomdialog"]
+    compile files('libs/pushservice-5.2.0.12.jar')
+    compile files('libs/ShareSDK-Wechat-2.8.3.jar')
+    compile files('libs/ShareSDK-Wechat-Core-2.8.3.jar')
+    compile files('libs/ShareSDK-Wechat-Favorite-2.8.3.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-2.8.3.jar')
+    compile files('libs/MobCommons-2017.0412.1554.jar')
+    compile files('libs/MobTools-2017.0412.1554.jar')
+    compile files('libs/ShareSDK-Core-2.8.3.jar')
+}

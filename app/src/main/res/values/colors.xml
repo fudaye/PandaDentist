@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="background_tab_pressed">#6633B5E5</color>
+    <color name="themeColor">#3F51B5</color>
+    <color name="background">@android:color/white</color>
+    <color name="lineColor">#e3e3e3</color>
+    <color name="text_color_light_gray2">#999</color>
+    <color name="refresh_progress_1">#ee3636</color>
+    <color name="refresh_progress_2">#00b0ff</color>
+    <color name="refresh_progress_3">#f9b880</color>
+</resources>
