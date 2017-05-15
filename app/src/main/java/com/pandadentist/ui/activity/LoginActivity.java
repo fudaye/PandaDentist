@@ -21,7 +21,7 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,UrlDetailActivity.class));
+                startActivity(new Intent(LoginActivity.this,WifiListActivity.class));
             }
         });
     }
