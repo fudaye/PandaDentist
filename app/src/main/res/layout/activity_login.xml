@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:gravity="center"
+    android:background="@drawable/ic_login_bg"
     android:layout_height="match_parent">
-    <Button
-        android:id="@+id/btn"
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="50sp"
-        android:text="微信登录"
+        android:text="@string/loginTips"
+        android:textSize="35sp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+
         />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/btn"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:textSize="50sp"
+        android:layout_above="@+id/tv"
+        android:background="@drawable/ic_login_weixin"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@android:color/black"
+        android:text="@string/wxLogin"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        />
+
+</RelativeLayout>
