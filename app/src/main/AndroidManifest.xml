@@ -33,6 +33,9 @@
         <activity android:name=".ui.activity.WifiListActivity"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            />
     </application>
 
 </manifest>
