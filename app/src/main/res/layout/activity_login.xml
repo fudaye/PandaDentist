@@ -4,21 +4,21 @@
     android:background="@drawable/ic_login_bg"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="90dp"
         android:text="@string/loginTips"
         android:textSize="35sp"
         android:gravity="center"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-
+        android:layout_marginTop="125dp"
+        android:src="@drawable/ic_login_text"
         />
 
     <ImageView
         android:id="@+id/btn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:textSize="50sp"
         android:layout_above="@+id/tv"
         android:background="@drawable/ic_login_weixin"
@@ -29,12 +29,13 @@
         android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:textSize="21sp"
         android:textColor="@android:color/black"
         android:text="@string/wxLogin"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="100dp"
+        android:layout_marginTop="20dp"
         />
 
 </RelativeLayout>

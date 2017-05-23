@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#f6f7fa</color>
+    <color name="colorPrimaryDark">#f6f7fa</color>
     <color name="colorAccent">#FF4081</color>
     <color name="background_tab_pressed">#6633B5E5</color>
     <color name="themeColor">#3F51B5</color>
@@ -11,4 +11,16 @@
     <color name="refresh_progress_1">#ee3636</color>
     <color name="refresh_progress_2">#00b0ff</color>
     <color name="refresh_progress_3">#f9b880</color>
+
+
+    <color name="titleColor">#042e6f</color>
+    <color name="subtitleColor">#8599b9</color>
+    <color name="auxiliaryTextColor">#9aaac4</color>
+    <color name="alertBackgroundColor">#ffffcc</color>
+    <color name="lightGray">#f6f7fa</color>
+    <color name="hintTextColor">#ff5f8c</color>
+    <color name="lightBlue">#c7dcff</color>
+    <color name="blue">#307bf1</color>
+    <color name="orange">#ff9900</color>
+
 </resources>

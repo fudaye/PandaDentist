@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PandaDentist</string>
+    <string name="app_name">熊猫刷牙</string>
     <string name="snap_load_fail">加载失败，请重试</string>
     <string name="retry">重试</string>
 

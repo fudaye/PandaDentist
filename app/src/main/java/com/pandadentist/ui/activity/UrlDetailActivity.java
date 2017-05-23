@@ -6,6 +6,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -15,6 +16,7 @@ import android.webkit.WebViewClient;
 
 import com.pandadentist.R;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
+import com.pandadentist.util.Toasts;
 
 /**
  * Created by Ford on 2016/10/14.
@@ -27,10 +29,19 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mToolBarTtitle.setText(getResources().getString(R.string.app_name));
+        mToolBackRl.setVisibility(View.INVISIBLE);
+        mToolbarFuncIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_device));
+        mToolbarFuncRl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toasts.showShort("添加设备");
+            }
+        });
         mWebView = (WebView) findViewById(R.id.wv);
         mDialog = new ProgressDialog(this);
         mDialog.setMessage("加载中....");
-        loadUrl(mUrl);
+//        loadUrl(mUrl);
     }
 
     @Override
