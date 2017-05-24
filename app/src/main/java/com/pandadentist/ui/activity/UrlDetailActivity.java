@@ -16,6 +16,7 @@ import android.webkit.WebViewClient;
 
 import com.pandadentist.R;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
+import com.pandadentist.util.IntentHelper;
 import com.pandadentist.util.Toasts;
 
 /**
@@ -36,6 +37,7 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity {
             @Override
             public void onClick(View v) {
                 Toasts.showShort("添加设备");
+                IntentHelper.gotoAddDevice(UrlDetailActivity.this);
             }
         });
         mWebView = (WebView) findViewById(R.id.wv);

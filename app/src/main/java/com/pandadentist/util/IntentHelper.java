@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 
+import com.pandadentist.ui.activity.AddDeviceActivity;
 import com.pandadentist.ui.activity.LoginActivity;
 import com.pandadentist.ui.activity.UrlDetailActivity;
 
@@ -24,6 +25,11 @@ public class IntentHelper {
 
     public static void gotoLogin(Context context){
         Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void gotoAddDevice(Context context){
+        Intent intent = new Intent(context, AddDeviceActivity.class);
         context.startActivity(intent);
     }
 

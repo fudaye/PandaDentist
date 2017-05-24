@@ -1,37 +1,34 @@
 package com.pandadentist.ui.activity;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import com.pandadentist.R;
+import com.pandadentist.ui.adapter.DeviceAdapter;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
+import com.pandadentist.widget.RecycleDecoration;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.id.list;
+
 
 
 /**
  * Created by Ford on 2017/5/15.
  */
 
-public class WifiListActivity extends SwipeRefreshBaseActivity {
+public class AddDeviceActivity extends SwipeRefreshBaseActivity {
 
     //定义WifiManager对象
     private WifiManager mainWifi;
@@ -39,25 +36,23 @@ public class WifiListActivity extends SwipeRefreshBaseActivity {
     private List<ScanResult> wifiList = new ArrayList<>();
     //扫描完毕接收器
     private WifiReceiver receiverWifi;
-    private ProgressDialog dialog;
 
     RecyclerView mRv;
-    Adapter mAdapter;
+
+    private DeviceAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mToolBarTtitle.setText(getResources().getString(R.string.addDevice));
         mRv = (RecyclerView) findViewById(R.id.rv);
         mRv.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new Adapter();
+        mRv.addItemDecoration(new RecycleDecoration(AddDeviceActivity.this));
+        mAdapter = new DeviceAdapter(wifiList);
         mRv.setAdapter(mAdapter);
+
         mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scanWifi();
-            }
-        });
+        scanWifi();
         receiverWifi = new WifiReceiver();
         registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
@@ -73,7 +68,6 @@ public class WifiListActivity extends SwipeRefreshBaseActivity {
     private void scanWifi() {
         openWifi();
         mainWifi.startScan();
-        dialog = ProgressDialog.show(this, "", "正在扫描wifi热点,请稍候");
     }
 
     /**
@@ -94,9 +88,8 @@ public class WifiListActivity extends SwipeRefreshBaseActivity {
             if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
                 //TODO 更新列表
                 wifiList = mainWifi.getScanResults();
-                dialog.dismiss();
                 Toast.makeText(context, "扫描完毕" + wifiList.size(), Toast.LENGTH_SHORT).show();
-                mAdapter.setUpdate(wifiList);
+                mAdapter.setData(wifiList);
             }
         }
     }
@@ -107,34 +100,4 @@ public class WifiListActivity extends SwipeRefreshBaseActivity {
         unregisterReceiver(receiverWifi);
     }
 
-    class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
-
-
-        @Override
-        public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new Holder(new TextView(parent.getContext()));
-        }
-
-        @Override
-        public void onBindViewHolder(Holder holder, int position) {
-            ((TextView) holder.itemView).setText(wifiList.get(position).SSID);
-        }
-
-        @Override
-        public int getItemCount() {
-            return wifiList.size();
-        }
-
-        class Holder extends RecyclerView.ViewHolder {
-
-            public Holder(View itemView) {
-                super(itemView);
-            }
-        }
-
-        public void setUpdate(List<ScanResult> data) {
-            wifiList = data;
-            notifyDataSetChanged();
-        }
-    }
 }

@@ -22,5 +22,7 @@
     <color name="lightBlue">#c7dcff</color>
     <color name="blue">#307bf1</color>
     <color name="orange">#ff9900</color>
+    <color name="gray">#999999</color>
+    <color name="black">#333333</color>
 
 </resources>

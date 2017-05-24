@@ -5,4 +5,6 @@
 
     <string name="loginTips">熊猫刷牙\n快乐每一天</string>
     <string name="wxLogin">微信登录</string>
+    <string name="nearbyDevice">附近的设备</string>
+    <string name="addDevice">添加设备</string>
 </resources>
