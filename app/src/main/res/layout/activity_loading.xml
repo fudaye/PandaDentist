@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/layout_appbar" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        >
+        <ImageView
+            android:layout_width="251dp"
+            android:layout_height="251dp"
+            android:src="@drawable/ic_loading_bg"
+            />
+        <com.pandadentist.widget.RoundProgressBarWidthNumber
+            android:id="@+id/prog"
+            android:layout_width="109dp"
+            android:layout_height="109dp"
+            android:layout_gravity="center"
+            app:progress_text_visibility1="invisible"
+            app:progress_text_size1="0dp"
+            app:progress_unreached_color1="@android:color/transparent"
+            app:progress_reached_color1="@color/hintTextColor"
+            app:progress_unreached_bar_height1="2dp"
+            android:max="1000"
+            android:progress="0" />
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="26sp"
+            android:textColor="@color/hintTextColor"
+            android:text="4%"
+            android:layout_gravity="center"
+            />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/connectSuccess"
+        android:textSize="15sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:textColor="@color/black"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="11sp"
+        android:text="@string/loadingTips"
+        android:layout_gravity="center_horizontal"
+        />
+
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:text="@string/finish"
+        android:textSize="15sp"
+        android:textColor="@color/btnTextColor"
+        android:background="@drawable/ic_btn_bg"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        />
+
+</LinearLayout>

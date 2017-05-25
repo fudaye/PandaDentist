@@ -7,4 +7,10 @@
     <string name="wxLogin">微信登录</string>
     <string name="nearbyDevice">附近的设备</string>
     <string name="addDevice">添加设备</string>
+    <string name="rememberPwd">记住密码</string>
+    <string name="connectWifi">链接WiFi</string>
+    <string name="nextStep">下一步</string>
+    <string name="connectSuccess">链接成功</string>
+    <string name="loadingTips">手机将暂时断开路由器链接设备，请尽量使用您的手机靠近设备。</string>
+    <string name="finish">完成</string>
 </resources>

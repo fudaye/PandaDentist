@@ -24,5 +24,6 @@
     <color name="orange">#ff9900</color>
     <color name="gray">#999999</color>
     <color name="black">#333333</color>
+    <color name="btnTextColor">#032d61</color>
 
 </resources>

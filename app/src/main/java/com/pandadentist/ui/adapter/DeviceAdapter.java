@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pandadentist.R;
+import com.pandadentist.util.IntentHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,12 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         public ViewHolder(View itemView) {
             super(itemView);
             tv = (TextView) itemView.findViewById(R.id.tv);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    IntentHelper.gotoConnectWifi(v.getContext());
+                }
+            });
         }
     }
 
