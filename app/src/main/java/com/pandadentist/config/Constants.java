@@ -40,6 +40,8 @@ public interface Constants {
      * 广播常量
      * */
     String  BROADCAST_FLAG_REFRESH_MESSAGE = "com.jt.broadcast.refresh";
+    String  BROADCAST_FLAG_CODE_MESSAGE = "com.jt.broadcast.code";
 
+    String AAAA = "a2a52f9e25c0a4dbcbdbabd529becd71";
 
 }

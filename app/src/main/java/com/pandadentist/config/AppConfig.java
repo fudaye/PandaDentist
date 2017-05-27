@@ -14,10 +14,8 @@ public class AppConfig {
 
     //请求超时时间
     public static final int DEFAULT_TIMEOUT = 20;
-    //开发环境
-//    public static final String BASE_URL = "http://192.168.1.10:8888";
     //正式环境
-    public static final String BASE_URL = "http://bk.zhuanghomes.com/bkapi/";
+    public static final String BASE_URL = "http://www.easylinkage.cn/";
 
 
 
