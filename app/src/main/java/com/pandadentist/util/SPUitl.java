@@ -2,6 +2,7 @@ package com.pandadentist.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.pandadentist.App;
 
@@ -155,5 +156,24 @@ public class SPUitl {
     public static void clear(){
         SharedPreferences s = App.sContext.getSharedPreferences("user",Context.MODE_PRIVATE);
         s.edit().clear().apply();
+    }
+
+    public static void saveToken(String token){
+        SharedPreferences s = App.sContext.getSharedPreferences("token",Context.MODE_PRIVATE);
+        s.edit().putString("token",token).apply();
+    }
+
+    public static String getToken (){
+        return App.sContext.getSharedPreferences("token",Context.MODE_PRIVATE).getString("token","");
+    }
+
+    public static void clearToken(){
+        SharedPreferences s = App.sContext.getSharedPreferences("token",Context.MODE_PRIVATE);
+        s.edit().clear().apply();
+    }
+
+
+    public static boolean isLogin(){
+        return !TextUtils.isEmpty(SPUitl.getToken());
     }
 }

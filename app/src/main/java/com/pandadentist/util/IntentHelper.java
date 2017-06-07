@@ -4,10 +4,11 @@ package com.pandadentist.util;
 import android.content.Context;
 import android.content.Intent;
 
-
+import com.pandadentist.configwifi.android.WifiConfigActivity;
 import com.pandadentist.ui.activity.AddDeviceActivity;
 import com.pandadentist.ui.activity.ConnectWifiActivity;
 import com.pandadentist.ui.activity.LoginActivity;
+import com.pandadentist.ui.activity.SmartLinkerWrapperActivity;
 import com.pandadentist.ui.activity.UrlDetailActivity;
 
 
@@ -21,6 +22,7 @@ public class IntentHelper {
 
     public static void gotoMain(Context context){
         Intent intent = new Intent(context, UrlDetailActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
 
@@ -29,13 +31,26 @@ public class IntentHelper {
         context.startActivity(intent);
     }
 
-    public static void gotoAddDevice(Context context){
-        Intent intent = new Intent(context, AddDeviceActivity.class);
+    public static void gotoWifiConfig(Context context){
+        Intent intent = new Intent(context, WifiConfigActivity.class);
         context.startActivity(intent);
     }
     public static void gotoConnectWifi(Context context){
         Intent intent = new Intent(context, ConnectWifiActivity.class);
         context.startActivity(intent);
+    }
+
+    public static void gotoAddDeviceActivity(Context context){
+        Intent intent = new Intent(context, AddDeviceActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 以抓包的方式绑定设备
+     *
+     * */
+    public static void gotoCapture(Context context){
+        context.startActivity(new Intent(context, SmartLinkerWrapperActivity.class));
     }
 
 }

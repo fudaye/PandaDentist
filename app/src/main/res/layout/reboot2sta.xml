@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        style="@style/title_text"
+	    android:text="@string/try_connect_success"
+	    android:textColor="#60ed4d"
+	    android:textSize="20sp"
+	    android:textStyle="bold"/>
+	<LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:background="@drawable/white_bule_gradient"
+	    android:gravity="center_horizontal">
+		<TableLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginLeft="10dp"
+		    android:layout_marginRight="10dp"
+	   		android:layout_marginTop="30dp">
+			<TableRow
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content">
+			    <TextView
+			        style="@style/label_m"
+			        android:text="@string/label_ssid"/>
+			    <EditText
+			        android:id="@+id/editText1"
+				    android:layout_weight="1"
+			        style="@style/edit_text_r"/>
+			</TableRow>
+
+			<TableRow
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content">
+			    <TextView
+			        style="@style/label_m"
+			        android:text="@string/label_encryption"/>
+			    <EditText
+			        android:id="@+id/editText2"
+				    android:layout_weight="1"
+			        style="@style/edit_text_r"/>
+			</TableRow>
+
+			<TableRow
+			    android:id="@+id/tableRow1"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content">
+			    <TextView
+			        style="@style/label_m"
+			        android:text="@string/label_password"/>
+			    <EditText
+			        android:id="@+id/editText3"
+			        android:layout_width="220dp"
+			        style="@style/edit_text_r"
+				    android:password="true"
+			        android:ellipsize="none"/>
+			</TableRow>
+
+			<TableRow
+			    android:id="@+id/tableRow2"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content">
+			    <CheckBox
+			        android:id="@+id/checkBox1"
+			        style="@style/edit_text_r"
+			        android:layout_marginLeft="-5dp"
+				    android:text="@string/show_passwd"
+				    android:layout_column="1"/>
+			</TableRow>
+		</TableLayout>
+
+		<LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="20dp">
+
+			<Button
+			    android:id="@+id/button1"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:text="@string/reboot_2_sta" />
+
+			<Button
+			    android:id="@+id/button2"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:text="@string/cancel" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

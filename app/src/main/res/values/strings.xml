@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">熊猫刷牙</string>
     <string name="snap_load_fail">加载失败，请重试</string>
     <string name="retry">重试</string>
@@ -13,4 +13,115 @@
     <string name="connectSuccess">链接成功</string>
     <string name="loadingTips">手机将暂时断开路由器链接设备，请尽量使用您的手机靠近设备。</string>
     <string name="finish">完成</string>
+
+
+
+
+    <!-- 配网demo文本 -->
+
+    <string name="about">About</string>
+    <string name="ap_lost">"The connection to AP with SSID \"%s\" is lost, please check whether the power is off!"</string>
+    <string name="ap_not_find">"Not find the AP with SSID \"%s\" in range, please check whether the power is on!"</string>
+    <string name="broadcast_content">Devices Searching</string>
+    <string name="cmd_scan_modules">HF-A11ASSISTHREAD</string>
+    <string name="cancel">Cancel</string>
+    <string name="choose">Choose</string>
+    <string name="content">Searching Code</string>
+    <string name="comfirm_modify">Are you sure to modify this field?</string>
+    <string name="comfirm_modify_scan_cmd">Are you sure to modify the searching code?</string>
+    <string name="comfirm_reset">Are you sure to reset the device? If yes, it will restart.</string>
+    <string name="connected_ap">Connected to AP with SSID \"%s\".</string>
+    <string name="default_ssid">HF-LPB</string>
+    <string name="default_dialog_title">Smart Link</string>
+    <string name="default_udp_port">48899</string>
+    <string name="enter_cmd_mode_failed">It\'s failed to enter cmd mode.</string>
+    <string name="label_ssid">SSID: </string>
+    <string name="label_encryption">Encryption:</string>
+    <string name="label_password">Password:</string>
+    <string name="no">No</string>
+    <string name="null_">Null</string>
+    <string name="network_changed_title">Wifi \"%s\" is changed</string>
+    <string name="network_changed_msg_ssid">SSID is changed to \"%s\", does it use new SSID?</string>
+    <string name="network_changed_msg_capabilites">The encryption is changed, please check the password.</string>
+    <string name="network_changed_msg_ssid_capabilites">SSID is changed to \"%s\", and encryption is also changed, does it use new SSID(If yes, please double check the password.)? </string>
+    <string name="ok">OK</string>
+    <string name="password">Password</string>
+    <string name="password_not_empty">The password of AP with SSID \"%s\" cannot be not empty!</string>
+    <string name="pls_choose_ap">Please choose a Wifi in the list</string>
+    <string name="pls_choose_wifi">Please choose a Wifi</string>
+    <string name="pls_input_password">Please input password</string>
+    <string name="press_again_to_exist">"Press back button again to exit."</string>
+    <string name="refresh">Refresh</string>
+    <string name="reboot">Reboot</string>
+    <string name="reboot_2_sta">Reboot To STA Mode</string>
+    <string name="reboot_2_sta_fail">Reboot to STA mode failed.</string>
+    <string name="reboot_2_sta_timeout">Reboot to STA mode time out.</string>
+    <string name="reboot_2_sta_confirm">Are you sure to reboot the device into STA mode?</string>
+    <string name="reset_success">Reset the module success!</string>
+    <string name="reset_failure">Sorry, reset the module fail!</string>
+    <string name="reset_wait">Please wait while reseting&#8230;</string>
+    <string name="response_failed">Warning, the sending is failed!</string>
+    <string name="response_time_out">Sorry, the sending is timeout!</string>
+    <string name="save">Save</string>
+    <string name="settings">Settings</string>
+    <string name="show_passwd">Show Password</string>
+    <string name="ssid">SSID</string>
+    <string name="tcp_udp_settings">TCP/UDP Settings</string>
+    <string name="try_connect">Try Connect</string>
+    <string name="try_connect_success">Try to connect successed</string>
+    <string name="try_connect_failed">Sorry, try to connect failed!</string>
+    <string name="try_connect_cmd_error">Warnning, the command to try to connect is error!</string>
+    <string name="try_connect_timeout">Sorry, try to connect time out!</string>
+    <!-- Replace "-" with an "en dash" character (–, &#8211;)  -->
+    <string name="tel">Tel:</string>
+    <string name="tel_hf">4001893108 </string>
+    <string name="unknown">Unknown</string>
+    <string name="unknown_response">Unknown Response [%s]</string>
+    <string name="version">Version: </string>
+    <string name="warning">Warning</string>
+    <string name="waitting">Processing, please wait......</string>
+    <string name="web">Web:</string>
+    <string name="web_hf">http://www.hi-flying.com/</string>
+    <string name="wep_password_invalid">The password of WEP is not valid!</string>
+    <string name="yes">Yes</string>
+    <string name="hf_profile" formatted="false" >
+        &#160;&#160;&#160;&#160;Shanghai High-Flying Electronics Technology Co., Ltd, found in Dec.2009 by leading experts, is a high-tech enterprises specialized in wireless communication domain and designs, develops, manufacture, markets and sells high quality, robust embedded Wi-Fi modules, and provide total IOT solution (Cloud Servers and APP) to the customer. Through continuous development and endeavor in field edge technology, High Flying developed a series high integrity and high cost effective intelligent hardware product. Now High-Flying’ s Wi-Fi products were broadly applied to Industrial, Smart-Metering, Smart Home, handset devices, medical and industrial instruments, smart grid,M2M field, etc. Based on its stable function and reasonable price, our product have won thousands of customers’ positive feedback and trust over the world.</string>
+
+    <!-- Wi-Fi Settings --> <skip />
+    <string name="wifi">WiFi</string>
+    <string name="wifi_mudole_params">WiFi Module Parameters</string>
+    <!-- Summary text when turning Wi-Fi or bluetooth on -->
+    <string name="wifi_starting">Turning on\u2026</string>
+    <!-- Summary text when turning Wi-Fi or bluetooth off -->
+    <string name="wifi_stopping">Turning off\u2026</string>
+    <!-- Summary text when Wi-Fi or bluetooth has error -->
+    <string name="wifi_error">Error</string>
+    <!-- Toast message when Wi-Fi or bluetooth is disallowed in airplane mode -->
+    <string name="wifi_in_airplane_mode">In airplane mode</string>
+    <!-- Toast message when Wi-Fi cannot scan for networks -->
+    <string name="wifi_fail_to_scan">Unable to scan for networks</string>
+
+    <!-- Summary for the remembered network. -->
+    <string name="wifi_remembered">Remembered</string>
+    <!-- Summary for the disabled network. -->
+    <string name="wifi_disabled">Disabled</string>
+    <!-- Summary for the remembered network but currently not in range. -->
+    <string name="wifi_not_in_range">Not in range</string>
+    <!-- Summary for the secured network. -->
+    <string name="wifi_secured">Secured with <xliff:g id="wifi_security">%1$s</xliff:g></string>
+    <!-- Summary for the secured and remembered network. Status can be "Remembered", "Disabled" or "Not in range". -->
+    <string name="wifi_secured_with_status"><xliff:g id="wifi_status">%2$s</xliff:g>, secured with <xliff:g id="wifi_security">%1$s</xliff:g></string>
+
+
+    <!--抓包方式-->
+
+    <string name="hiflying_smartlinker_ssid">SSID:</string>
+    <string name="hiflying_smartlinker_password">Password:</string>
+    <string name="hiflying_smartlinker_start">Start</string>
+    <string name="hiflying_smartlinker_waiting">Waiting&#8230;</string>
+    <string name="hiflying_smartlinker_timeout">Time Out!</string>
+    <string name="hiflying_smartlinker_completed">配网成功</string>
+    <string name="hiflying_smartlinker_new_module_found" formatted="false">New smart linked module: Mac-%s Ip-%s</string>
+    <string name="hiflying_smartlinker_no_wifi_connectivity">No Wifi Connectivity</string>
+
 </resources>

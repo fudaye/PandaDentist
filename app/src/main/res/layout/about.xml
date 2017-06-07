@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        style="@style/title_text"
+        android:text="@string/about"/>
+
+	<LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@drawable/hf_logo_bgd"
+	    android:gravity="center">
+		<ImageView
+		    android:id="@+id/imageView1"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/hf_logo"
+		    android:layout_gravity="center_horizontal"/>
+	</LinearLayout>
+	<LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:background="@drawable/white_bule_gradient">
+
+        <LinearLayout
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="right">
+		    <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/version"
+    			android:textSize="10sp"
+		        android:textColor="#000"/>
+		    <TextView
+	        	android:id="@+id/textView2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginRight="3dp"
+    			android:textSize="10sp"
+		        android:textColor="#000"/>
+		</LinearLayout>
+
+		<LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+		    android:layoutAnimation="@anim/layout_slide_bottom_to_top">
+		    <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        android:layout_gravity="center_horizontal"
+		        android:text="@string/hf_profile"
+		        android:scrollbars="vertical"
+		        android:paddingTop="20dp"
+		        android:paddingBottom="5dp"
+		        android:paddingRight="4dp"
+		        android:paddingLeft="4dp"
+		        android:textSize="12sp"
+		        android:textColor="@color/light_blue"/>
+		</LinearLayout>
+
+	    <LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical"
+		    android:layoutAnimation="@anim/layout_animation_fade">
+		     <LinearLayout
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:orientation="horizontal"
+			    android:padding="3dp">
+			    <LinearLayout
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:orientation="vertical">
+			        <TextView
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:autoLink="phone"
+			            android:text="@string/tel"
+	        			android:textColor="@color/black"/>
+			        <TextView
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:autoLink="web"
+			            android:text="@string/web"
+	        			android:textColor="@color/black"/>
+			    </LinearLayout>
+
+			    <LinearLayout
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:orientation="vertical">
+			        <TextView
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:autoLink="phone"
+			            android:textColorLink="@color/dark_blue"
+			            android:text="@string/tel_hf" />
+			        <TextView
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:autoLink="web"
+			            android:textColorLink="@color/dark_blue"
+			            android:text="@string/web_hf" />
+			    </LinearLayout>
+		     </LinearLayout>
+	    </LinearLayout>
+	</LinearLayout>
+</LinearLayout>

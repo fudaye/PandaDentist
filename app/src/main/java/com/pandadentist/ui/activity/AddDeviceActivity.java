@@ -34,6 +34,7 @@ public class AddDeviceActivity extends SwipeRefreshBaseActivity {
     private WifiManager mainWifi;
     //扫描出的网络连接列表
     private List<ScanResult> wifiList = new ArrayList<>();
+    private List<ScanResult> tempwifiList = new ArrayList<>();
     //扫描完毕接收器
     private WifiReceiver receiverWifi;
 
@@ -48,10 +49,10 @@ public class AddDeviceActivity extends SwipeRefreshBaseActivity {
         mRv = (RecyclerView) findViewById(R.id.rv);
         mRv.setLayoutManager(new LinearLayoutManager(this));
         mRv.addItemDecoration(new RecycleDecoration(AddDeviceActivity.this));
-        mAdapter = new DeviceAdapter(wifiList);
+        mAdapter = new DeviceAdapter(wifiList,this);
         mRv.setAdapter(mAdapter);
 
-        mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        mainWifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         scanWifi();
         receiverWifi = new WifiReceiver();
         registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
@@ -86,9 +87,14 @@ public class AddDeviceActivity extends SwipeRefreshBaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                //TODO 更新列表
-                wifiList = mainWifi.getScanResults();
-                Toast.makeText(context, "扫描完毕" + wifiList.size(), Toast.LENGTH_SHORT).show();
+                wifiList.clear();
+                tempwifiList = mainWifi.getScanResults();
+                Toast.makeText(context, "扫描完毕" + tempwifiList.size(), Toast.LENGTH_SHORT).show();
+                for(ScanResult sr : tempwifiList){
+                    if(sr.SSID.contains("BJYDD")){
+                        wifiList.add(sr);
+                    }
+                }
                 mAdapter.setData(wifiList);
             }
         }

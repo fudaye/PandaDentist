@@ -6,32 +6,27 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
 import com.pandadentist.R;
 import com.pandadentist.config.Constants;
-import com.pandadentist.entity.UserInfo;
 import com.pandadentist.entity.WXEntity;
-import com.pandadentist.listener.OnLoginListener;
 import com.pandadentist.network.APIFactory;
 import com.pandadentist.network.APIService;
-import com.pandadentist.network.LoginApi;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
 import com.pandadentist.util.IntentHelper;
-import com.tencent.mm.opensdk.modelbase.BaseReq;
-import com.tencent.mm.opensdk.modelbase.BaseResp;
+import com.pandadentist.util.SPUitl;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-
-import java.util.HashMap;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+
 
 
 
@@ -48,6 +43,10 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(!TextUtils.isEmpty(SPUitl.getToken())){
+            IntentHelper.gotoMain(this);
+            finish();
+        }
         api = WXAPIFactory.createWXAPI(this,APP_ID);
         LocalBroadcastManager lbm =  LocalBroadcastManager.getInstance(this);
         broadcast = new CodeReceiverBroadcast();
@@ -82,6 +81,9 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
                     @Override
                     public void call(WXEntity wxEntity) {
                         Log.d("throwable","throwable-->"+wxEntity.toString());
+                        SPUitl.saveToken(wxEntity.getToken());
+                        IntentHelper.gotoMain(LoginActivity.this);
+                        finish();
                     }
                 }, new Action1<Throwable>() {
                     @Override

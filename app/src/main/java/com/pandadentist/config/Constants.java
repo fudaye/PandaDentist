@@ -10,7 +10,7 @@ public interface Constants {
     /**
      * 服务器返回状态码
      */
-    int SUCCESS = 1001;
+    int SUCCESS = 0;
     //登录过期
     int NOLOGIN = 2001;
     //修改密码时旧密码错误

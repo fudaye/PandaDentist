@@ -58,4 +58,8 @@
             <enum name="left" value="1"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="WifiEncryptionState">
+        <attr name="state_encrypted" format="boolean" />
+    </declare-styleable>
 </resources>

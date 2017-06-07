@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.pandadentist.config.Constants;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
@@ -21,6 +19,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
+    private static final String TAG = WXEntryActivity.class.getSimpleName();
 
     IWXAPI api;
     private static final String APP_ID = "wxa2fe13a5495f3908";
@@ -61,13 +60,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp resp) {
-        int result = 0;
         SendAuth.Resp r = (SendAuth.Resp) resp;
-        Toast.makeText(this, "baseresp.getType = " + r.getType(), Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"errorCode-->"+r.errCode);
+        Log.d(TAG,"code-->"+r.code);
         LocalBroadcastManager lb = LocalBroadcastManager.getInstance(this);
         Intent intent = new Intent(Constants.BROADCAST_FLAG_CODE_MESSAGE);
         intent.putExtra(Constants.BUNDLE_KEY.VALUE,r.code);
         lb.sendBroadcast(intent);
+        finish();
 //        switch (resp.errCode) {
 //            case BaseResp.ErrCode.ERR_OK:
 //                result = R.string.errcode_success;

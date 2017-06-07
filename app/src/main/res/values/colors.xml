@@ -26,4 +26,15 @@
     <color name="black">#333333</color>
     <color name="btnTextColor">#032d61</color>
 
+
+
+
+    <!--配网demo-->
+    <color name="title_bgd">#5384c2</color>
+    <color name="bottom_bgd">#3971b8</color>
+    <color name="yellow">#f8ea09</color>
+    <color name="red">#dd0871</color>
+    <color name="light_blue">#2f77cf</color>
+    <color name="dark_blue">#0f1dd2</color>
+
 </resources>

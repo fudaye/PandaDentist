@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:title="@string/broadcast_content">
+        <EditTextPreference
+            android:title="@string/content"
+            android:key="cmd_scan_modules"
+        	android:defaultValue="@string/cmd_scan_modules"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/wifi_mudole_params">
+        <EditTextPreference
+            android:title="@string/ssid"
+            android:key="SSID"
+            android:defaultValue="@string/default_ssid"
+        	android:selectable="true"/>
+        <EditTextPreference
+            android:title="@string/password"
+            android:key="PASSWORD"
+        	android:selectable="true"
+			android:password="true"/>
+        <EditTextPreference
+            android:title="@string/tcp_udp_settings"
+            android:key="udp_port"
+            android:defaultValue="@string/default_udp_port"
+            android:inputType="number"
+        	android:selectable="true"
+        	android:numeric="integer"
+        	android:maxLength="5"/>
+    </PreferenceCategory>
+</PreferenceScreen>
