@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import com.pandadentist.R;
 import com.pandadentist.config.Constants;
@@ -22,42 +23,41 @@ import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import butterknife.Bind;
+import butterknife.OnClick;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 
-
-
 /**
  * Created by Ford on 2016/10/14.
- *
+ * <p>
  * test
  */
 public class LoginActivity extends SwipeRefreshBaseActivity {
 
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private static final String APP_ID = "wxa2fe13a5495f3908";
+    @Bind(R.id.et_username)
+    EditText etUsername;
+    @Bind(R.id.et_pwd)
+    EditText etPwd;
     private IWXAPI api;
     private CodeReceiverBroadcast broadcast;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(!TextUtils.isEmpty(SPUitl.getToken())){
+        if (!TextUtils.isEmpty(SPUitl.getToken())) {
             IntentHelper.gotoMain(this);
             finish();
         }
-        api = WXAPIFactory.createWXAPI(this,APP_ID);
-        LocalBroadcastManager lbm =  LocalBroadcastManager.getInstance(this);
+        api = WXAPIFactory.createWXAPI(this, APP_ID);
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         broadcast = new CodeReceiverBroadcast();
-        lbm.registerReceiver(broadcast,new IntentFilter(Constants.BROADCAST_FLAG_CODE_MESSAGE));
-        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                IntentHelper.gotoMain(LoginActivity.this);
-                WXLogin();
-            }
-        });
+        lbm.registerReceiver(broadcast, new IntentFilter(Constants.BROADCAST_FLAG_CODE_MESSAGE));
     }
 
     @Override
@@ -65,14 +65,14 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
         return R.layout.activity_login;
     }
 
-    private void WXLogin(){
+    private void WXLogin() {
         SendAuth.Req req = new SendAuth.Req();
         req.scope = "snsapi_userinfo";
         req.state = "wechat_sdk_demo_test";
         api.sendReq(req);
     }
 
-    private void getToken(String code){
+    private void getToken(String code) {
         APIService api = new APIFactory().create(APIService.class);
         Subscription s = api.getWXToken(code, Constants.AAAA)
                 .subscribeOn(Schedulers.io())
@@ -80,7 +80,7 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
                 .subscribe(new Action1<WXEntity>() {
                     @Override
                     public void call(WXEntity wxEntity) {
-                        Log.d("throwable","throwable-->"+wxEntity.toString());
+                        Log.d("throwable", "throwable-->" + wxEntity.toString());
                         SPUitl.saveToken(wxEntity.getToken());
                         IntentHelper.gotoMain(LoginActivity.this);
                         finish();
@@ -88,18 +88,34 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Log.d("throwable","throwable-->"+throwable.toString());
+                        Log.d("throwable", "throwable-->" + throwable.toString());
                     }
                 });
         addSubscription(s);
     }
 
-    class CodeReceiverBroadcast extends BroadcastReceiver{
+    @OnClick({R.id.ll_email_register, R.id.ll_wxlogin, R.id.btn})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.ll_email_register:
+                IntentHelper.gotoEmailRegister(LoginActivity.this);
+                break;
+            case R.id.ll_wxlogin:
+                WXLogin();
+                break;
+            case R.id.btn:
+                //TODO 邮箱登录
+                IntentHelper.gotoMain(LoginActivity.this);
+                break;
+        }
+    }
+
+    class CodeReceiverBroadcast extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String  str = intent.getStringExtra(Constants.BUNDLE_KEY.VALUE);
-            Log.d("str","str--->"+str);
+            String str = intent.getStringExtra(Constants.BUNDLE_KEY.VALUE);
+            Log.d(TAG, "code--->" + str);
             getToken(str);
         }
     }

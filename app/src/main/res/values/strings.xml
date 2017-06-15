@@ -13,6 +13,9 @@
     <string name="connectSuccess">链接成功</string>
     <string name="loadingTips">手机将暂时断开路由器链接设备，请尽量使用您的手机靠近设备。</string>
     <string name="finish">完成</string>
+    <string name="emailRegister">邮箱注册</string>
+    <string name="login">登  入</string>
+    <string name="register">注  册</string>
 
 
 

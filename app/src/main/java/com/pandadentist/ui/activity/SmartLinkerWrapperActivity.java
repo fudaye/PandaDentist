@@ -1,9 +1,13 @@
 package com.pandadentist.ui.activity;
 
+import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.hiflying.smartlink.SmartLinkedModule;
 import com.hiflying.smartlink.v7.MulticastSmartLinkerActivity;
+import com.pandadentist.R;
 import com.pandadentist.config.Constants;
 import com.pandadentist.entity.WXEntity;
 import com.pandadentist.network.APIFactory;
@@ -31,6 +35,18 @@ public class SmartLinkerWrapperActivity extends MulticastSmartLinkerActivity {
     private boolean isCompleted = false;
     private CompositeSubscription mCompositeSubscription;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        TextView tv = (TextView) findViewById(R.id.tv_toolbar_title);
+        tv.setText("链接WiFi");
+        findViewById(R.id.rl_toolbar_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
 
     @Override
     public void onCompleted() {

@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.pandadentist.configwifi.android.WifiConfigActivity;
 import com.pandadentist.ui.activity.AddDeviceActivity;
 import com.pandadentist.ui.activity.ConnectWifiActivity;
+import com.pandadentist.ui.activity.EmailRegisterActivity;
 import com.pandadentist.ui.activity.LoginActivity;
 import com.pandadentist.ui.activity.SmartLinkerWrapperActivity;
 import com.pandadentist.ui.activity.UrlDetailActivity;
@@ -45,12 +46,16 @@ public class IntentHelper {
         context.startActivity(intent);
     }
 
-    /**
+    /**gotoAddDeviceActivity
      * 以抓包的方式绑定设备
      *
      * */
     public static void gotoCapture(Context context){
         context.startActivity(new Intent(context, SmartLinkerWrapperActivity.class));
+    }
+
+    public static void gotoEmailRegister(Context context){
+        context.startActivity(new Intent(context, EmailRegisterActivity.class));
     }
 
 }

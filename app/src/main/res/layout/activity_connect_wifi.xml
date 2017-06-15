@@ -29,8 +29,8 @@
         android:layout_height="48dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:textColor="@color/black"
         android:enabled="false"
+        android:textColor="@color/black"
         android:textSize="15sp" />
 
     <View
@@ -73,9 +73,8 @@
         android:id="@+id/btn"
         android:layout_width="140dp"
         android:layout_height="48dp"
-        android:text="@string/nextStep"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
         android:background="@drawable/ic_btn_bg"
-        />
+        android:text="@string/nextStep" />
 </LinearLayout>

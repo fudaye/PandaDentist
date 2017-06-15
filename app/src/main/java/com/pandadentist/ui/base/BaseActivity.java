@@ -53,6 +53,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Nullable
     @Bind(R.id.tv_search_Enable)
     public TextView mTvSearch;
+    @Nullable
+    @Bind(R.id.iv_toolbar_back)
+    public ImageView mTitleBackIv;
 
     @Nullable
     @OnClick(R.id.rl_toolbar_back)

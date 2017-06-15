@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_launch_bg"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/welcome_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:layout_above="@+id/iv" />
+
+
+    <RelativeLayout
+        android:id="@+id/rl_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:visibility="visible"
+        >
+
+        <com.pandadentist.widget.RoundProgressBarWidthNumber
+            android:id="@+id/prog"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:progress_reached_bar_height1="1dp"
+            app:progress_text_visibility1="invisible"
+            app:progress_text_size1="0dp"
+            app:progress_unreached_color1="@android:color/transparent"
+            app:progress_reached_color1="@color/red"
+            app:progress_unreached_bar_height1="1dp"
+            android:progress="0" />
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="17dp"
+            android:text="跳过"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+
+
+
+</RelativeLayout>

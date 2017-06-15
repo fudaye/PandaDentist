@@ -156,6 +156,7 @@ public class SPUitl {
     public static void clear(){
         SharedPreferences s = App.sContext.getSharedPreferences("user",Context.MODE_PRIVATE);
         s.edit().clear().apply();
+        clearToken();
     }
 
     public static void saveToken(String token){

@@ -11,6 +11,8 @@
     <color name="refresh_progress_1">#ee3636</color>
     <color name="refresh_progress_2">#00b0ff</color>
     <color name="refresh_progress_3">#f9b880</color>
+    <color name="loginTextGreen">#30cc6b</color>
+    <color name="loginTextLightBlue">#20cbe7</color>
 
 
     <color name="titleColor">#042e6f</color>

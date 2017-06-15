@@ -1,109 +1,50 @@
 package com.pandadentist.ui.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-
-import android.widget.Toast;
+import android.view.View;
+import android.widget.TextView;
 
 import com.pandadentist.R;
-import com.pandadentist.ui.adapter.DeviceAdapter;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
-import com.pandadentist.widget.RecycleDecoration;
+import com.pandadentist.util.IntentHelper;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-
+import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
- * Created by Ford on 2017/5/15.
+ * Created by fudaye on 2017/6/15.
  */
 
 public class AddDeviceActivity extends SwipeRefreshBaseActivity {
 
-    //定义WifiManager对象
-    private WifiManager mainWifi;
-    //扫描出的网络连接列表
-    private List<ScanResult> wifiList = new ArrayList<>();
-    private List<ScanResult> tempwifiList = new ArrayList<>();
-    //扫描完毕接收器
-    private WifiReceiver receiverWifi;
-
-    RecyclerView mRv;
-
-    private DeviceAdapter mAdapter;
+    @Bind(R.id.tv_indicator)
+    TextView mTv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolBarTtitle.setText(getResources().getString(R.string.addDevice));
-        mRv = (RecyclerView) findViewById(R.id.rv);
-        mRv.setLayoutManager(new LinearLayoutManager(this));
-        mRv.addItemDecoration(new RecycleDecoration(AddDeviceActivity.this));
-        mAdapter = new DeviceAdapter(wifiList,this);
-        mRv.setAdapter(mAdapter);
-
-        mainWifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        scanWifi();
-        receiverWifi = new WifiReceiver();
-        registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        mToolBarTtitle.setText("添加设备");
+        mTv.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mTv.getPaint().setAntiAlias(true);
     }
 
     @Override
     public int providerLayoutId() {
-        return R.layout.activity_wifi_list;
+        return R.layout.activity_add_device;
     }
 
-    /**
-     * 扫描wifi,加载进度条
-     */
-    private void scanWifi() {
-        openWifi();
-        mainWifi.startScan();
-    }
-
-    /**
-     * 打开wifi
-     */
-    private void openWifi() {
-        if (!mainWifi.isWifiEnabled()) {
-            mainWifi.setWifiEnabled(true);
+    @OnClick({R.id.tv_indicator, R.id.btn})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_indicator:
+                Intent intent = new Intent(AddDeviceActivity.this,GuideActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.btn:
+                IntentHelper.gotoCapture(AddDeviceActivity.this);
+                break;
         }
     }
-
-    /**
-     * wifi广播接收器
-     */
-    class WifiReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                wifiList.clear();
-                tempwifiList = mainWifi.getScanResults();
-                Toast.makeText(context, "扫描完毕" + tempwifiList.size(), Toast.LENGTH_SHORT).show();
-                for(ScanResult sr : tempwifiList){
-                    if(sr.SSID.contains("BJYDD")){
-                        wifiList.add(sr);
-                    }
-                }
-                mAdapter.setData(wifiList);
-            }
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(receiverWifi);
-    }
-
 }
