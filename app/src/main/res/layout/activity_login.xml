@@ -50,6 +50,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@android:color/transparent"
+            android:hint="请输入邮箱"
             android:inputType="text"
             android:textColor="@color/black"
             android:textSize="15sp" />
@@ -70,6 +71,7 @@
             android:background="@android:color/transparent"
             android:inputType="textPassword"
             android:textColor="@color/black"
+            android:hint="请输入密码"
             android:textSize="15sp" />
 
         <View

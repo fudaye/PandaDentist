@@ -173,6 +173,20 @@ public class SPUitl {
         s.edit().clear().apply();
     }
 
+    public static void saveWiFiPwd(String ssid,String pwd){
+        SharedPreferences s = App.sContext.getSharedPreferences(ssid,Context.MODE_PRIVATE);
+        s.edit().putString(ssid,pwd).apply();
+    }
+
+    public static void clearWiFi(String ssid){
+        SharedPreferences s = App.sContext.getSharedPreferences(ssid,Context.MODE_PRIVATE);
+        s.edit().clear().apply();
+    }
+
+    public static String getWiFiPwd (String ssid) {
+        return App.sContext.getSharedPreferences(ssid,Context.MODE_PRIVATE).getString(ssid,"");
+    }
+
 
     public static boolean isLogin(){
         return !TextUtils.isEmpty(SPUitl.getToken());

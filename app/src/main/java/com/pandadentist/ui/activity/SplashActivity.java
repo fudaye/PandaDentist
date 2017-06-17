@@ -57,7 +57,7 @@ public class SplashActivity extends SwipeRefreshBaseActivity {
             }
         };
         // 倒计时ji
-        timer.schedule(timerTask, 0, 100);
+        timer.schedule(timerTask, 0, 150);
     }
 
     @Override

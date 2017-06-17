@@ -8,6 +8,7 @@ import com.pandadentist.configwifi.android.WifiConfigActivity;
 import com.pandadentist.ui.activity.AddDeviceActivity;
 import com.pandadentist.ui.activity.ConnectWifiActivity;
 import com.pandadentist.ui.activity.EmailRegisterActivity;
+import com.pandadentist.ui.activity.LoadingActivity;
 import com.pandadentist.ui.activity.LoginActivity;
 import com.pandadentist.ui.activity.SmartLinkerWrapperActivity;
 import com.pandadentist.ui.activity.UrlDetailActivity;
@@ -56,6 +57,12 @@ public class IntentHelper {
 
     public static void gotoEmailRegister(Context context){
         context.startActivity(new Intent(context, EmailRegisterActivity.class));
+    }
+
+    public static void gotoloadingActivity(Context context,String mac){
+        Intent intent =new Intent(context, LoadingActivity.class);
+        intent.putExtra("mac",mac);
+        context.startActivity(intent);
     }
 
 }

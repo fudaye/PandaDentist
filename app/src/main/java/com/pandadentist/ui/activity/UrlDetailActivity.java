@@ -2,6 +2,7 @@ package com.pandadentist.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -166,6 +167,10 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
                 break;
             case R.id.nav_logout:
                 SPUitl.clear();
+                Intent intent = new Intent(this,LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
                 break;
         }
 

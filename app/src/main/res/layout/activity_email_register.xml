@@ -12,12 +12,12 @@
 
     <ImageView
         android:id="@+id/iv"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:layout_below="@+id/title"
         android:layout_marginTop="40dp"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/ic_register_email" />
 
 
     <LinearLayout
@@ -42,6 +42,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@android:color/transparent"
+            android:hint="请输入邮箱"
             android:inputType="text"
             android:textColor="@color/black"
             android:textSize="15sp" />
@@ -62,6 +63,7 @@
             android:background="@android:color/transparent"
             android:inputType="textPassword"
             android:textColor="@color/black"
+            android:hint="请输入密码"
             android:textSize="15sp" />
 
         <View

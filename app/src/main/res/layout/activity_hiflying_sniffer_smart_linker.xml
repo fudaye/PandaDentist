@@ -49,6 +49,7 @@
         android:background="@android:color/transparent"
         android:inputType="textPassword"
         android:textColor="@color/black"
+        android:hint="请输入家中的WiFi密码"
         android:textSize="15sp" />
 
     <View
@@ -59,14 +60,29 @@
         android:background="@color/lineColor" />
 
 
-    <CheckBox
-        android:id="@+id/cb"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/rememberPwd"
-        android:textColor="@color/gray" />
+        android:layout_marginTop="30dp">
+
+        <CheckBox
+            android:id="@+id/cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rememberPwd"
+            android:textColor="@color/gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:text="仅支持2.4G  WiFi网络"
+
+            />
+    </RelativeLayout>
 
 
     <Button

@@ -43,9 +43,9 @@
     </FrameLayout>
 
     <TextView
+        android:id="@+id/tv_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/connectSuccess"
         android:textSize="15sp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"

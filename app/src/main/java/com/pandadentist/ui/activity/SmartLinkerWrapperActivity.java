@@ -1,8 +1,11 @@
 package com.pandadentist.ui.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.hiflying.smartlink.SmartLinkedModule;
@@ -34,16 +37,38 @@ public class SmartLinkerWrapperActivity extends MulticastSmartLinkerActivity {
     private boolean isBind = false;
     private boolean isCompleted = false;
     private CompositeSubscription mCompositeSubscription;
+    private CheckBox mCb;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TextView tv = (TextView) findViewById(R.id.tv_toolbar_title);
         tv.setText("链接WiFi");
+        mCb = (CheckBox) findViewById(R.id.cb);
         findViewById(R.id.rl_toolbar_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        if(!TextUtils.isEmpty(SPUitl.getWiFiPwd(mSsidEditText.getText().toString()))){
+            mPasswordEditText.setText(SPUitl.getWiFiPwd(mSsidEditText.getText().toString()));
+            mCb.setChecked(true);
+        }else{
+            mCb.setChecked(false);
+        }
+        mCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    //保存wifi密码
+                    SPUitl.saveWiFiPwd(mSsidEditText.getText().toString(),mPasswordEditText.getText().toString());
+                }else{
+                    //清楚wifi密码
+                    SPUitl.clearWiFi(mSsidEditText.getText().toString());
+                }
             }
         });
     }
@@ -60,9 +85,19 @@ public class SmartLinkerWrapperActivity extends MulticastSmartLinkerActivity {
     public void onLinked(SmartLinkedModule module) {
         super.onLinked(module);
         Log.d(TAG, "MAC 地址 ----->" + module.getMac());
-        bindDevice(module.getMac());
+        IntentHelper.gotoloadingActivity(this,module.getMac());
+        if(mCb.isChecked()){
+            SPUitl.saveWiFiPwd(mSsidEditText.getText().toString(),mPasswordEditText.getText().toString());
+        }
+//        startActivity(new Intent(SmartLinkerWrapperActivity.this,LoadingActivity.class));
+//        bindDevice(module.getMac());
     }
 
+    @Override
+    public void onTimeOut() {
+        super.onTimeOut();
+        Toasts.showShort("连接失败，请确定WiFi是否连接，");
+    }
 
     private void gotoMain() {
         if (isBind && isCompleted) {

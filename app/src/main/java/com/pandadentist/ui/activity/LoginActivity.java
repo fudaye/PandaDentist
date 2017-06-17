@@ -19,6 +19,7 @@ import com.pandadentist.network.APIService;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
 import com.pandadentist.util.IntentHelper;
 import com.pandadentist.util.SPUitl;
+import com.pandadentist.util.Toasts;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -104,8 +105,20 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
                 WXLogin();
                 break;
             case R.id.btn:
-                //TODO 邮箱登录
-                IntentHelper.gotoMain(LoginActivity.this);
+                // 邮箱登录
+                String username = etUsername.getText().toString();
+                String pwd = etPwd.getText().toString();
+                if(TextUtils.isEmpty(username)){
+                    Toasts.showShort("邮箱不能为空");
+                    return;
+                }
+                if(TextUtils.isEmpty(pwd)){
+                    Toasts.showShort("密码不能为空");
+                    return;
+                }
+                loginForEmail(username,pwd);
+//                IntentHelper.gotoMain(LoginActivity.this);
+//                IntentHelper.gotoloadingActivity(this,"");
                 break;
         }
     }
@@ -116,7 +129,9 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
         public void onReceive(Context context, Intent intent) {
             String str = intent.getStringExtra(Constants.BUNDLE_KEY.VALUE);
             Log.d(TAG, "code--->" + str);
-            getToken(str);
+            if(!TextUtils.isEmpty(str)){
+                getToken(str);
+            }
         }
     }
 
@@ -124,5 +139,32 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcast);
+    }
+
+
+    private void loginForEmail(String username ,String pwd){
+        APIService api = new APIFactory().create(APIService.class);
+        Subscription s = api.loginForEmail(username,pwd,Constants.AAAA)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<WXEntity>() {
+                    @Override
+                    public void call(WXEntity wxEntity) {
+
+                        if (Constants.SUCCESS == wxEntity.getCode()) {
+                            IntentHelper.gotoMain(LoginActivity.this);
+                            finish();
+                        } else {
+                            Toasts.showShort("登录失败，请检查网络");
+                            Log.d(TAG,"错误code ：" + wxEntity.getCode() + "错误信息：" + wxEntity.getMessage());
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.d("throwable", "throwable-->" + throwable.toString());
+                    }
+                });
+        addSubscription(s);
     }
 }
