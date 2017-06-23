@@ -10,7 +10,7 @@
             android:title="会员积分" />
         <item
             android:id="@+id/nav_panda_store"
-            android:icon="@drawable/ic_menu_panda_store"
+            android:icon="@drawable/ic_menu_store"
             android:title="熊猫商城" />
         <item
             android:id="@+id/nav_typeface"
@@ -30,7 +30,7 @@
 
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/ic_menu_logout"
             android:title="退出" />
 
     </group>

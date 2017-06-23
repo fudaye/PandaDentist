@@ -48,15 +48,19 @@
         android:textColor="#20cbe7"
         android:textSize="15sp" />
 
+
     <Button
         android:id="@+id/btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_width="215dp"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="60dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/ic_btn_bg"
         android:text="指示灯闪烁"
-        android:textColor="@color/black" />
+        android:textColor="@color/btnTextColor" />
 
 
 </LinearLayout>

@@ -30,8 +30,9 @@
             app:progress_text_visibility1="invisible"
             app:progress_text_size1="0dp"
             app:progress_unreached_color1="@android:color/transparent"
-            app:progress_reached_color1="@color/red"
+            app:progress_reached_color1="@android:color/white"
             app:progress_unreached_bar_height1="1dp"
+            android:alpha="0.7"
             android:progress="0" />
 
         <TextView
@@ -40,10 +41,11 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+
             android:layout_marginTop="17dp"
             android:text="跳过"
             android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
     </RelativeLayout>
 

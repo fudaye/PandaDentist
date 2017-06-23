@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hiflying.smartlink.SmartLinkedModule;
@@ -37,7 +37,9 @@ public class SmartLinkerWrapperActivity extends MulticastSmartLinkerActivity {
     private boolean isBind = false;
     private boolean isCompleted = false;
     private CompositeSubscription mCompositeSubscription;
-    private CheckBox mCb;
+    private LinearLayout mCb;
+    private ImageView checkIv;
+    private boolean isChecked = false;
 
 
     @Override
@@ -45,7 +47,8 @@ public class SmartLinkerWrapperActivity extends MulticastSmartLinkerActivity {
         super.onCreate(savedInstanceState);
         TextView tv = (TextView) findViewById(R.id.tv_toolbar_title);
         tv.setText("链接WiFi");
-        mCb = (CheckBox) findViewById(R.id.cb);
+        mCb = (LinearLayout) findViewById(R.id.cb);
+        checkIv = (ImageView) findViewById(R.id.iv);
         findViewById(R.id.rl_toolbar_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,19 +58,19 @@ public class SmartLinkerWrapperActivity extends MulticastSmartLinkerActivity {
 
         if(!TextUtils.isEmpty(SPUitl.getWiFiPwd(mSsidEditText.getText().toString()))){
             mPasswordEditText.setText(SPUitl.getWiFiPwd(mSsidEditText.getText().toString()));
-            mCb.setChecked(true);
+            checkIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_checked));
         }else{
-            mCb.setChecked(false);
+            checkIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_normal));
         }
-        mCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mCb.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onClick(View v) {
                 if(isChecked){
-                    //保存wifi密码
-                    SPUitl.saveWiFiPwd(mSsidEditText.getText().toString(),mPasswordEditText.getText().toString());
+                    isChecked = false;
+                    checkIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_normal));
                 }else{
-                    //清楚wifi密码
-                    SPUitl.clearWiFi(mSsidEditText.getText().toString());
+                    checkIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_checked));
+                    isChecked = true;
                 }
             }
         });
@@ -86,7 +89,7 @@ public class SmartLinkerWrapperActivity extends MulticastSmartLinkerActivity {
         super.onLinked(module);
         Log.d(TAG, "MAC 地址 ----->" + module.getMac());
         IntentHelper.gotoloadingActivity(this,module.getMac());
-        if(mCb.isChecked()){
+        if(isChecked){
             SPUitl.saveWiFiPwd(mSsidEditText.getText().toString(),mPasswordEditText.getText().toString());
         }
 //        startActivity(new Intent(SmartLinkerWrapperActivity.this,LoadingActivity.class));

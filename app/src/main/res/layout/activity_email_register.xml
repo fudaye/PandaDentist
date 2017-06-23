@@ -79,12 +79,15 @@
 
     <Button
         android:id="@+id/btn"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
+        android:layout_width="215dp"
+        android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="39dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="60dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/ic_btn_bg"
-        android:text="@string/register" />
+        android:text="@string/register"
+        android:textColor="@color/btnTextColor" />
 
 </RelativeLayout>

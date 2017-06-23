@@ -68,6 +68,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.0'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     compile rootProject.ext.dependencies["appcompat-v7"]
     compile rootProject.ext.dependencies["cardview"]
     compile rootProject.ext.dependencies["design"]
@@ -104,4 +105,5 @@ dependencies {
     compile files('libs/ShareSDK-Core-2.8.3.jar')
     compile files('libs/android_4.2.2_r1_hide.jar')
     compile files('libs/hiflying-iots-android-smartlink-7.0.3.jar')
+    compile files('libs/tbs_sdk_thirdapp_v3.2.0.1104_43200_sharewithdownload_withfilereader_withoutGame_obfs_20170609_115346.jar')
 }

@@ -81,10 +81,15 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
                 .subscribe(new Action1<WXEntity>() {
                     @Override
                     public void call(WXEntity wxEntity) {
-                        Log.d("throwable", "throwable-->" + wxEntity.toString());
-                        SPUitl.saveToken(wxEntity.getToken());
-                        IntentHelper.gotoMain(LoginActivity.this);
-                        finish();
+                        if(wxEntity.getCode()==Constants.SUCCESS){
+                            SPUitl.saveToken(wxEntity.getToken());
+                            SPUitl.saveWXUser(wxEntity);
+                            IntentHelper.gotoMain(LoginActivity.this);
+                            finish();
+                        }else{
+                            Toasts.showShort("绑定失败，请稍后重试");
+                        }
+
                     }
                 }, new Action1<Throwable>() {
                     @Override

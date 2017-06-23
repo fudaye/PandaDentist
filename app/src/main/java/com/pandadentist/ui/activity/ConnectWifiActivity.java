@@ -2,14 +2,10 @@ package com.pandadentist.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.pandadentist.R;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
 
-import butterknife.Bind;
 import butterknife.OnClick;
 
 /**
@@ -19,12 +15,12 @@ import butterknife.OnClick;
 public class ConnectWifiActivity extends SwipeRefreshBaseActivity {
 
 
-    @Bind(R.id.tv_wifi_name)
-    TextView tvWifiName;
-    @Bind(R.id.tv_wifi_pwd)
-    EditText tvWifiPwd;
-    @Bind(R.id.cb)
-    CheckBox cb;
+//    @Bind(R.id.tv_wifi_name)
+//    TextView tvWifiName;
+//    @Bind(R.id.tv_wifi_pwd)
+//    EditText tvWifiPwd;
+//    @Bind(R.id.cb)
+//    CheckBox cb;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +30,8 @@ public class ConnectWifiActivity extends SwipeRefreshBaseActivity {
 
     @Override
     public int providerLayoutId() {
-        return R.layout.activity_connect_wifi;
+        return 0;
+//        return R.layout.activity_connect_wifi;
     }
 
 
