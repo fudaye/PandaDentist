@@ -81,12 +81,12 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
                 .subscribe(new Action1<WXEntity>() {
                     @Override
                     public void call(WXEntity wxEntity) {
-                        if(wxEntity.getCode()==Constants.SUCCESS){
+                        if (wxEntity.getCode() == Constants.SUCCESS) {
                             SPUitl.saveToken(wxEntity.getToken());
                             SPUitl.saveWXUser(wxEntity);
                             IntentHelper.gotoMain(LoginActivity.this);
                             finish();
-                        }else{
+                        } else {
                             Toasts.showShort("绑定失败，请稍后重试");
                         }
 
@@ -113,15 +113,15 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
                 // 邮箱登录
                 String username = etUsername.getText().toString();
                 String pwd = etPwd.getText().toString();
-                if(TextUtils.isEmpty(username)){
+                if (TextUtils.isEmpty(username)) {
                     Toasts.showShort("邮箱不能为空");
                     return;
                 }
-                if(TextUtils.isEmpty(pwd)){
+                if (TextUtils.isEmpty(pwd)) {
                     Toasts.showShort("密码不能为空");
                     return;
                 }
-                loginForEmail(username,pwd);
+                loginForEmail(username, pwd);
 //                IntentHelper.gotoMain(LoginActivity.this);
 //                IntentHelper.gotoloadingActivity(this,"");
                 break;
@@ -134,7 +134,7 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
         public void onReceive(Context context, Intent intent) {
             String str = intent.getStringExtra(Constants.BUNDLE_KEY.VALUE);
             Log.d(TAG, "code--->" + str);
-            if(!TextUtils.isEmpty(str)){
+            if (!TextUtils.isEmpty(str)) {
                 getToken(str);
             }
         }
@@ -147,9 +147,9 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
     }
 
 
-    private void loginForEmail(String username ,String pwd){
+    private void loginForEmail(String username, String pwd) {
         APIService api = new APIFactory().create(APIService.class);
-        Subscription s = api.loginForEmail(username,pwd,Constants.AAAA)
+        Subscription s = api.loginForEmail(username, pwd, Constants.AAAA)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<WXEntity>() {
@@ -159,14 +159,19 @@ public class LoginActivity extends SwipeRefreshBaseActivity {
                         if (Constants.SUCCESS == wxEntity.getCode()) {
                             IntentHelper.gotoMain(LoginActivity.this);
                             finish();
+                        } else if (20002 == wxEntity.getCode()) {
+                            Toasts.showShort("用户名不存在");
+                        } else if (20003 == wxEntity.getCode()) {
+                            Toasts.showShort("用户名或密码错误");
                         } else {
                             Toasts.showShort("登录失败，请检查网络");
-                            Log.d(TAG,"错误code ：" + wxEntity.getCode() + "错误信息：" + wxEntity.getMessage());
+                            Log.d(TAG, "错误code ：" + wxEntity.getCode() + "错误信息：" + wxEntity.getMessage());
                         }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        Toasts.showShort("登录失败，请检查网络");
                         Log.d("throwable", "throwable-->" + throwable.toString());
                     }
                 });

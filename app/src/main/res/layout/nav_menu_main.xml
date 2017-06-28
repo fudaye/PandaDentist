@@ -9,11 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="23dp">
+        android:padding="15dp">
 
         <ImageView
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/ic_menu_member_point" />
 
         <TextView
@@ -32,11 +32,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="23dp">
+        android:padding="15dp">
 
         <ImageView
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/ic_menu_store" />
 
         <TextView
@@ -55,11 +55,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="23dp">
+        android:padding="15dp">
 
         <ImageView
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/ic_menu_typeface" />
 
         <TextView
@@ -78,11 +78,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="23dp">
+        android:padding="15dp">
 
         <ImageView
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/ic_menu_wx_friend" />
 
         <TextView
@@ -90,34 +90,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="23dp"
-            android:text="微信朋友圈排行"
+            android:text="绑定我的微信"
             android:textColor="#333333"
             android:textSize="15sp" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_brash_record"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="23dp">
-
-        <ImageView
-            android:layout_width="23dp"
-            android:layout_height="23dp"
-            android:src="@drawable/ic_menu_brush_teeth_record" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="23dp"
-            android:text="我的刷牙记录"
-            android:textColor="#333333"
-            android:textSize="15sp" />
-
-    </LinearLayout>
 
     <Button
         android:id="@+id/btn"
@@ -127,7 +105,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="60dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/ic_btn_bg"
         android:text="退出"
         android:textColor="@color/btnTextColor" />

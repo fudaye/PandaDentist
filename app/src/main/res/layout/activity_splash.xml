@@ -15,8 +15,8 @@
 
     <RelativeLayout
         android:id="@+id/rl_skip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_margin="20dp"
         android:visibility="visible"
@@ -24,8 +24,8 @@
 
         <com.pandadentist.widget.RoundProgressBarWidthNumber
             android:id="@+id/prog"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             app:progress_reached_bar_height1="1dp"
             app:progress_text_visibility1="invisible"
             app:progress_text_size1="0dp"
@@ -37,12 +37,11 @@
 
         <TextView
             android:id="@+id/tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-
-            android:layout_marginTop="17dp"
+            android:gravity="center"
             android:text="跳过"
             android:textColor="@android:color/white"
             android:textSize="12sp" />

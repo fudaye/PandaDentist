@@ -11,6 +11,8 @@ import com.pandadentist.entity.WXEntity;
 import com.pandadentist.network.APIFactory;
 import com.pandadentist.network.APIService;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
+import com.pandadentist.util.IntentHelper;
+import com.pandadentist.util.SPUitl;
 import com.pandadentist.util.Toasts;
 
 import butterknife.Bind;
@@ -69,7 +71,9 @@ public class EmailRegisterActivity extends SwipeRefreshBaseActivity {
                     @Override
                     public void call(WXEntity wxEntity) {
                         if (Constants.SUCCESS == wxEntity.getCode()) {
-                            Toasts.showShort("注册成功");
+                            SPUitl.saveToken(wxEntity.getToken());
+                            IntentHelper.gotoMain(EmailRegisterActivity.this);
+                            finish();
                         } else {
                             Toasts.showShort("注册失败");
                             Log.d(TAG,"错误code ：" + wxEntity.getCode() + "错误信息：" + wxEntity.getMessage());

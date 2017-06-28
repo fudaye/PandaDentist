@@ -209,14 +209,13 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
         return true;
     }
 
-    @OnClick({R.id.ll_member_point, R.id.ll_panda_store, R.id.ll_typeface, R.id.ll_wx_friend, R.id.ll_brash_record, R.id.btn})
+    @OnClick({R.id.ll_member_point, R.id.ll_panda_store, R.id.ll_typeface, R.id.ll_wx_friend, R.id.btn})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_member_point:
             case R.id.ll_panda_store:
             case R.id.ll_typeface:
             case R.id.ll_wx_friend:
-            case R.id.ll_brash_record:
                 Toasts.showShort("功能暂未开放");
                 break;
             case R.id.btn:
