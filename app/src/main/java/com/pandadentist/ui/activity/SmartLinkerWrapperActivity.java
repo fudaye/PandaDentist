@@ -46,7 +46,7 @@ public class SmartLinkerWrapperActivity extends MulticastSmartLinkerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TextView tv = (TextView) findViewById(R.id.tv_toolbar_title);
-        tv.setText("链接WiFi");
+        tv.setText(getResources().getString(R.string.connectWifi));
         mCb = (LinearLayout) findViewById(R.id.cb);
         checkIv = (ImageView) findViewById(R.id.iv);
         findViewById(R.id.rl_toolbar_back).setOnClickListener(new View.OnClickListener() {

@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="开机状态"
+            android:text="@string/off"
             android:textColor="#ff5f8c"
             android:textSize="17sp"
             android:textStyle="bold" />
@@ -31,7 +31,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="下长按三秒，指示灯进入闪烁"
+            android:text="@string/changansanmiao"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
@@ -44,7 +44,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:autoLink="all"
-        android:text="如何将指示灯设置为闪烁"
+        android:text="@string/ruhejiangzhishi"
         android:textColor="#20cbe7"
         android:textSize="15sp" />
 
@@ -59,7 +59,7 @@
         android:layout_marginBottom="60dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/ic_btn_bg"
-        android:text="指示灯闪烁"
+        android:text="@string/zhishidengshanshuo"
         android:textColor="@color/btnTextColor" />
 
 

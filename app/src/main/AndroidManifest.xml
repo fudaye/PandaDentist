@@ -12,6 +12,10 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--wifi 配网demo-->
     <uses-feature android:required="true" android:name="android.hardware.wifi"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
@@ -33,8 +37,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.activity.BleTestActivity"
+            android:screenOrientation="portrait"
+            />
+
         <activity android:name=".ui.activity.LoginActivity"
             android:launchMode="singleTop"
+            />
+
+        <activity android:name=".ui.activity.LanguageSwitchActivity"
+            android:screenOrientation="portrait"
             />
 
         <activity
@@ -80,6 +92,7 @@
         <activity android:name=".ui.activity.EmailRegisterActivity"
             android:screenOrientation="portrait"
             />
+        <service android:enabled="true" android:name=".service.UartService" />
     </application>
 
 </manifest>

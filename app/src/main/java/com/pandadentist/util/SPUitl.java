@@ -215,4 +215,13 @@ public class SPUitl {
     public static boolean isLogin() {
         return !TextUtils.isEmpty(SPUitl.getToken());
     }
+
+    public static boolean isFirstRun(){
+        return App.sContext.getSharedPreferences("firstrun", Context.MODE_PRIVATE).getBoolean("firstrun", true);
+    }
+
+    public static void saveFirsRun(boolean b){
+        SharedPreferences s = App.sContext.getSharedPreferences("firstrun", Context.MODE_PRIVATE);
+        s.edit().putBoolean("firstrun", b).apply();
+    }
 }

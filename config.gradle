@@ -22,8 +22,8 @@ ext {
     android = [compileSdkVersion: 23,
                buildToolsVersion: "23.0.2",
                applicationId    : "com.pandadentist",
-               minSdkVersion    : 14,
-               targetSdkVersion : 22,
+               minSdkVersion    : 18,
+               targetSdkVersion : 25,
                versionCode      : 105,
                versionName      : "1.0.5"]
 
