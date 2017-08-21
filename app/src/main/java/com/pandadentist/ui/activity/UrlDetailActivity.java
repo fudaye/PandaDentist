@@ -40,8 +40,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.pandadentist.R.id.textView3;
-
 /**
  * Created by Ford on 2016/10/14.
  */
@@ -102,7 +100,7 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
             }
         });
         headerIv = (CircleImageView) findViewById(R.id.imageView);
-        usernameTv = (TextView) findViewById(textView3);
+        usernameTv = (TextView) findViewById(R.id.textView3);
         mWebView.setOnScrollChangedCallback(new X5ObserWebView.OnScrollChangedCallback() {
             public void onScroll(int l, int t) {
 //                Log.d(TAG, "We Scrolled etc..." + l + " t =" + t);
@@ -119,7 +117,8 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        loadData();
+        Log.d(TAG,"onNewIntent");
+//        loadData();
     }
 
     @Override
@@ -318,6 +317,7 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
                 @Override
                 public void onClick(View v) {
                     //TODO 蓝牙
+                    startActivity(new Intent(UrlDetailActivity.this,AddBlueToothDeviceActivityTest.class));
                     mPopupWindow.dismiss();
                 }
             });

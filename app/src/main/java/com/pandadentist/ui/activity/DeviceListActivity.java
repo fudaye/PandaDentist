@@ -26,16 +26,15 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -45,7 +44,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pandadentist.R;
-import com.pandadentist.util.Toasts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,21 +67,21 @@ public class DeviceListActivity extends Activity {
 
 
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);
         setContentView(R.layout.device_list);
         android.view.WindowManager.LayoutParams layoutParams = this.getWindow().getAttributes();
-        layoutParams.gravity= Gravity.TOP;
+        layoutParams.gravity=Gravity.TOP;
         layoutParams.y = 200;
         mHandler = new Handler();
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toasts.showShort("蓝牙不支持");
+            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -95,7 +93,7 @@ public class DeviceListActivity extends Activity {
 
         // Checks if Bluetooth is supported on the device.
         if (mBluetoothAdapter == null) {
-            Toasts.showShort("蓝牙版本不支持");
+            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -113,7 +111,6 @@ public class DeviceListActivity extends Activity {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void populateList() {
         /* Initialize device list container */
         Log.d(TAG, "populateList");
@@ -129,19 +126,17 @@ public class DeviceListActivity extends Activity {
 
     }
     
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void scanLeDevice(final boolean enable) {
         final Button cancelButton = (Button) findViewById(R.id.btn_cancel);
         if (enable) {
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
                 @Override
                 public void run() {
 					mScanning = false;
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                         
-                    cancelButton.setText("扫描");
+                    cancelButton.setText(R.string.scan);
 
                 }
             }, SCAN_PERIOD);
@@ -152,7 +147,7 @@ public class DeviceListActivity extends Activity {
         } else {
             mScanning = false;
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            cancelButton.setText("扫描");
+            cancelButton.setText(R.string.scan);
         }
 
     }
@@ -193,10 +188,6 @@ public class DeviceListActivity extends Activity {
         if (!deviceFound) {
         	deviceList.add(device);
             mEmptyList.setVisibility(View.GONE);
-                 	
-        	
-
-            
             deviceAdapter.notifyDataSetChanged();
         }
     }
@@ -210,7 +201,6 @@ public class DeviceListActivity extends Activity {
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void onStop() {
         super.onStop();
@@ -218,7 +208,6 @@ public class DeviceListActivity extends Activity {
     
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -228,7 +217,6 @@ public class DeviceListActivity extends Activity {
 
     private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
     	
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             BluetoothDevice device = deviceList.get(position);
@@ -247,7 +235,6 @@ public class DeviceListActivity extends Activity {
 
 
     
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     protected void onPause() {
         super.onPause();
         scanLeDevice(false);
@@ -305,20 +292,19 @@ public class DeviceListActivity extends Activity {
             tvadd.setText(device.getAddress());
             if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                 Log.i(TAG, "device::"+device.getName());
-                tvname.setTextColor(Color.WHITE);
-                tvadd.setTextColor(Color.WHITE);
+                tvname.setTextColor(Color.BLACK);
+                tvadd.setTextColor(Color.BLACK);
                 tvpaired.setTextColor(Color.GRAY);
                 tvpaired.setVisibility(View.VISIBLE);
-                tvpaired.setText("配对");
+                tvpaired.setText(R.string.paired);
                 tvrssi.setVisibility(View.VISIBLE);
-                tvrssi.setTextColor(Color.WHITE);
-                
+                tvrssi.setTextColor(Color.BLACK);
             } else {
-                tvname.setTextColor(Color.WHITE);
-                tvadd.setTextColor(Color.WHITE);
+                tvname.setTextColor(Color.BLACK);
+                tvadd.setTextColor(Color.BLACK);
                 tvpaired.setVisibility(View.GONE);
                 tvrssi.setVisibility(View.VISIBLE);
-                tvrssi.setTextColor(Color.WHITE);
+                tvrssi.setTextColor(Color.BLACK);
             }
             return vg;
         }

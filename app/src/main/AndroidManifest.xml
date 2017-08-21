@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--wifi 配网demo-->
     <uses-feature android:required="true" android:name="android.hardware.wifi"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
@@ -37,7 +36,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.BleTestActivity"
+        <activity android:name=".ui.activity.DeviceListActivity"/>
+        <activity android:name=".ui.activity.AddBlueToothDeviceActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.activity.AddBlueToothDeviceActivityTest"
             android:screenOrientation="portrait"
             />
 

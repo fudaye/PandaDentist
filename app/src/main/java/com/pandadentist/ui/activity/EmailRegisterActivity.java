@@ -71,6 +71,10 @@ public class EmailRegisterActivity extends SwipeRefreshBaseActivity {
                     @Override
                     public void call(WXEntity wxEntity) {
                         if (Constants.SUCCESS == wxEntity.getCode()) {
+                            WXEntity.InfoBean infoBean = new WXEntity.InfoBean();
+                            infoBean.setName(username);
+                            wxEntity.setInfo(infoBean);
+                            SPUitl.saveWXUser(wxEntity);
                             SPUitl.saveToken(wxEntity.getToken());
                             IntentHelper.gotoMain(EmailRegisterActivity.this);
                             finish();
