@@ -42,4 +42,20 @@ public interface APIService {
     @FormUrlEncoded
     @POST("wx/2/user/login")
     Observable<WXEntity> loginForEmail(@Field("username") String username, @Field("password") String password,@Field("aaaa") String aaaa);
+
+
+    /**
+     * 上传蓝牙数据
+     */
+    @FormUrlEncoded
+    @POST("/bleprocess/sync")
+    Observable<WXEntity> uploadData(@Field("deviceid") String deviceid,
+                                    @Field("software") String software,
+                                    @Field("factory") String factory,//厂家
+                                    @Field("model") String model,//型号
+                                    @Field("power") String power,
+                                    @Field("time") String time,
+                                    @Field("hardware") String hardware,
+                                    @Field("content")  String content
+                                    );
 }

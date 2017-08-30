@@ -6,18 +6,19 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
-import com.pandadentist.App;
-import com.pandadentist.config.Constants;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-
+import com.pandadentist.App;
+import com.pandadentist.config.Constants;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -40,13 +41,12 @@ public class AppHelper {
     private static final String TAG = AppHelper.class.getSimpleName();
 
     public static String getDeviceId() {
-//        TelephonyManager tm = (TelephonyManager) App.sContext.getSystemService(Context.TELEPHONY_SERVICE);
-//        if (TextUtils.isEmpty(tm.getDeviceId())) {
-//            return "";
-//        } else {
-//            return tm.getDeviceId();
-//        }
-        return SPUitl.getChannelId();
+        TelephonyManager tm = (TelephonyManager) App.sContext.getSystemService(Context.TELEPHONY_SERVICE);
+        if (TextUtils.isEmpty(tm.getDeviceId())) {
+            return "-1";
+        } else {
+            return tm.getDeviceId();
+        }
     }
     //设备类型android为3    ios为4
     public static String getDeviceType(){

@@ -13,7 +13,7 @@ public class AppConfig {
   public static final String BAIDU_PUSH_KEY = "R2jfWhmVO8GnwU2ZTXtNir9N";
 
     //请求超时时间
-    public static final int DEFAULT_TIMEOUT = 20;
+    public static final int DEFAULT_TIMEOUT = 60;
     //正式环境
     public static final String BASE_URL = "http://www.easylinkage.cn/";
 

@@ -317,7 +317,7 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
                 @Override
                 public void onClick(View v) {
                     //TODO 蓝牙
-                    startActivity(new Intent(UrlDetailActivity.this,AddBlueToothDeviceActivityTest.class));
+                    startActivity(new Intent(UrlDetailActivity.this,AddBlueToothDeviceActivity.class));
                     mPopupWindow.dismiss();
                 }
             });

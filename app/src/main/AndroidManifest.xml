@@ -36,13 +36,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.activity.BlueHelperActivity"
+            android:screenOrientation="portrait"
+            />
         <activity android:name=".ui.activity.DeviceListActivity"/>
         <activity android:name=".ui.activity.AddBlueToothDeviceActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.activity.AddBlueToothDeviceActivityTest"
-            android:screenOrientation="portrait"
-            />
 
         <activity android:name=".ui.activity.LoginActivity"
             android:launchMode="singleTop"

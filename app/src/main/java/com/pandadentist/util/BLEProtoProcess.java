@@ -1,5 +1,7 @@
 package com.pandadentist.util;
 
+import com.pandadentist.listener.OnZhenListener;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class BLEProtoProcess {
     private int time = 0;
 
     private StringBuffer mLog = new StringBuffer();
+    private OnZhenListener onZhenListener;
 
     public static void main(String[] args) throws Exception {
         BLEProtoProcess bleProtoProcess = new BLEProtoProcess();
@@ -221,6 +224,9 @@ public class BLEProtoProcess {
                 logBuilder.append("data(");
                 logBuilder.append(index);
                 logBuilder.append(") :");
+                if(onZhenListener != null){
+                    onZhenListener.onZhen(index,totalnum);
+                }
 //                logBuilder.append(Bytes.bytes2hexString(Bytes.copyOf(response, 4, 16)));
                 this.buffer.put(index, Bytes.copyOf(response, 4, 16));
 
@@ -285,5 +291,45 @@ public class BLEProtoProcess {
 
     public void clearLog() {
         mLog = new StringBuffer();
+    }
+
+    public int getSoftware() {
+        return software;
+    }
+
+    public int getHardware() {
+        return hardware;
+    }
+
+    public int getFactory() {
+        return factory;
+    }
+
+    public int getModel() {
+        return model;
+    }
+
+    public int getTotalnum() {
+        return totalnum;
+    }
+
+    public int getPower() {
+        return power;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public StringBuffer getmLog() {
+        return mLog;
+    }
+
+    public void setOnZhenListener(OnZhenListener onZhenListener) {
+        this.onZhenListener = onZhenListener;
+    }
+
+    public void removeZhenListener(){
+        onZhenListener = null;
     }
 }

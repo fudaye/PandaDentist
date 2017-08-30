@@ -12,4 +12,10 @@ public class ExampleUnitTest {
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
+    @Test
+    public void percent (){
+        String string = "C0:2B:A4:97:4E:87";
+        string = string.replaceAll(":","");
+        System.out.print(string);
+    }
 }
