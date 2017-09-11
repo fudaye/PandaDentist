@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.pandadentist.R;
@@ -38,6 +39,14 @@ public class BlueToothDeviceAdapter extends RecyclerView.Adapter<BlueToothDevice
     public void onBindViewHolder(ViewHolder holder, int position) {
         BluetoothDevice device = devices.get(position);
         holder.tv.setText(device.getName());
+        holder.btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onItemClickListener != null){
+                    onItemClickListener.onItemClick(v,holder.getAdapterPosition());
+                }
+            }
+        });
     }
 
     @Override
@@ -48,18 +57,12 @@ public class BlueToothDeviceAdapter extends RecyclerView.Adapter<BlueToothDevice
     class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv)
         TextView tv;
+        @Bind(R.id.btn_add)
+        Button btn;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(onItemClickListener != null){
-                        onItemClickListener.onItemClick(itemView,getAdapterPosition());
-                    }
-                }
-            });
         }
     }
 

@@ -1,77 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.UrlDetailActivity">
 
-    <RelativeLayout
-        android:id="@+id/rl_guide"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        >
+        android:orientation="vertical">
 
 
-        <ImageView
+        <RelativeLayout
+            android:id="@+id/fl_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_guide" />
-
-        <Button
-            android:id="@+id/btn_dismiss"
-            android:layout_width="180dp"
-            android:layout_height="80dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="140dp"
-            android:background="@android:color/transparent" />
-    </RelativeLayout>
+            android:layout_height="match_parent">
 
 
-    <RelativeLayout
-        android:id="@+id/rl_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
-
-
-        <include
-            android:id="@+id/title"
-            layout="@layout/layout_appbar" />
-
-
-        <ImageView
-            android:id="@+id/iv_hint"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_main_hint_bg"
-            android:visibility="visible" />
-
-        <com.pandadentist.widget.MultiSwipeRefreshLayout
-            android:id="@+id/swipe_refresh_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/title">
-
-            <com.pandadentist.widget.X5ObserWebView
-                android:id="@+id/wv"
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none"
-                android:visibility="gone"
-                tools:context="com.bestfudaye.com.pandadentist.ui.activity.UrlDetailActivity" />
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/rl_guide"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
 
 
-        </com.pandadentist.widget.MultiSwipeRefreshLayout>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_guide" />
+
+                    <Button
+                        android:id="@+id/btn_dismiss"
+                        android:layout_width="180dp"
+                        android:layout_height="80dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="140dp"
+                        android:background="@android:color/transparent" />
+                </RelativeLayout>
 
 
-    </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/rl_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
 
-</FrameLayout>
+
+                    <include
+                        android:id="@+id/title"
+                        layout="@layout/layout_appbar" />
+
+
+                    <ImageView
+                        android:id="@+id/iv_hint"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/title"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_main_hint_bg"
+                        android:visibility="visible" />
+
+                    <RelativeLayout
+                        android:id="@+id/rl_tips"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_below="@+id/title"
+                        android:background="#FD608C"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:visibility="gone"
+                        >
+
+                        <ImageView
+                            android:id="@+id/iv"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_blt_connect" />
+
+                        <TextView
+                            android:id="@+id/tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@+id/iv"
+                            android:text="总共上传数据0条，成功0条，失败0条"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_close"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:gravity="center"
+                            android:text="关闭"
+                            android:textColor="@android:color/white" />
+
+                    </RelativeLayout>
+
+                    <com.pandadentist.widget.MultiSwipeRefreshLayout
+                        android:id="@+id/swipe_refresh_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/rl_tips">
+
+
+                        <com.pandadentist.widget.X5ObserWebView
+                            android:id="@+id/wv"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="none"
+                            android:visibility="gone"
+                            tools:context="com.bestfudaye.com.pandadentist.ui.activity.UrlDetailActivity" />
+
+
+                    </com.pandadentist.widget.MultiSwipeRefreshLayout>
+
+
+                </RelativeLayout>
+
+            </FrameLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
+
 

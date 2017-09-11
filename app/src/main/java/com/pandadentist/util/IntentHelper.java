@@ -3,6 +3,7 @@ package com.pandadentist.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.pandadentist.configwifi.android.WifiConfigActivity;
 import com.pandadentist.ui.activity.AddDeviceActivity;
@@ -21,8 +22,10 @@ import com.pandadentist.ui.activity.UrlDetailActivity;
  */
 public class IntentHelper {
 
+    private static final String TAG =  IntentHelper.class.getSimpleName();
 
     public static void gotoMain(Context context){
+
         Intent intent = new Intent(context, UrlDetailActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);

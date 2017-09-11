@@ -29,6 +29,9 @@ import butterknife.OnClick;
  * Created by packy on 2016/5/31.
  */
 public class SplashActivity extends SwipeRefreshBaseActivity {
+
+    private static final String  TAG = SplashActivity.class.getSimpleName();
+
     @Bind(R.id.welcome_iv)
     ImageView welcomeIv;
     @Bind(R.id.prog)
@@ -52,6 +55,8 @@ public class SplashActivity extends SwipeRefreshBaseActivity {
                 progNum += 3;
                 prog.setProgress(progNum);
                 if (progNum >= 100) {
+                    timer.cancel();
+                    timerTask.cancel();
                     goMainActivity();
                 }
             }

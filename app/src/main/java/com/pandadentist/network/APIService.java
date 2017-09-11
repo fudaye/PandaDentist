@@ -1,6 +1,7 @@
 package com.pandadentist.network;
 
 
+import com.pandadentist.entity.DeviceListEntity;
 import com.pandadentist.entity.WXEntity;
 
 import retrofit2.http.Field;
@@ -43,6 +44,12 @@ public interface APIService {
     @POST("wx/2/user/login")
     Observable<WXEntity> loginForEmail(@Field("username") String username, @Field("password") String password,@Field("aaaa") String aaaa);
 
+    /**
+     * 获得绑定设备列表
+     */
+    @FormUrlEncoded
+    @POST("wx/2/device/list")
+    Observable<DeviceListEntity> getDeviceList(@Field("token") String token);
 
     /**
      * 上传蓝牙数据
@@ -56,6 +63,7 @@ public interface APIService {
                                     @Field("power") String power,
                                     @Field("time") String time,
                                     @Field("hardware") String hardware,
-                                    @Field("content")  String content
+                                    @Field("content")  String content,
+                                    @Field("dataType") String dataType
                                     );
 }

@@ -134,6 +134,7 @@ public abstract class SwipeRefreshBaseActivity extends BaseActivity
         if(mProg == null){
             mProg = new ProgressDialog(this);
             mProg.setMessage("正在加载中...");
+            mProg.setCancelable(false);
             mProg.show();
         }else{
             mProg.show();

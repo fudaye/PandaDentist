@@ -1,32 +1,58 @@
 package com.pandadentist.ui.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.pandadentist.R;
+import com.pandadentist.config.Constants;
+import com.pandadentist.entity.DeviceListEntity;
 import com.pandadentist.entity.WXEntity;
+import com.pandadentist.listener.OnItemClickListener;
+import com.pandadentist.network.APIFactory;
+import com.pandadentist.network.APIService;
+import com.pandadentist.service.UartService;
+import com.pandadentist.ui.adapter.PopDeviceAdapter;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
+import com.pandadentist.util.BLEProtoProcess;
 import com.pandadentist.util.DensityUtil;
 import com.pandadentist.util.IntentHelper;
 import com.pandadentist.util.SPUitl;
 import com.pandadentist.util.Toasts;
+import com.pandadentist.widget.RecycleViewDivider;
 import com.pandadentist.widget.X5ObserWebView;
 import com.tencent.mm.opensdk.modelbiz.JumpToBizProfile;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -36,9 +62,19 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Ford on 2016/10/14.
@@ -46,7 +82,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UrlDetailActivity extends SwipeRefreshBaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = UrlDetailActivity.class.getSimpleName();
-
+    private static final int REQUEST_SELECT_DEVICE = 1;
+    private static final int REQUEST_ENABLE_BT = 2;
+    private static final int UART_PROFILE_READY = 10;
+    private static final int UART_PROFILE_CONNECTED = 20;
+    private static final int UART_PROFILE_DISCONNECTED = 21;
+    private static final int STATE_OFF = 10;
+    private static final long SCAN_PERIOD = 10000; //蓝牙扫描时长10秒
 
 
     @Bind(R.id.iv_hint)
@@ -61,27 +103,67 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
     RelativeLayout rlGuide;
     @Bind(R.id.title)
     View appbar;
+    @Bind(R.id.tv_isConnect)
+    TextView tvIsConnect;
+    @Bind(R.id.rl_tips)
+    RelativeLayout rlTips;
+    @Bind(R.id.tv)
+    TextView tvUpdateRecord;
 
     private static final String APP_ID = "wxa2fe13a5495f3908";
     private String mUrl = "http://www.easylinkage.cn/webapp2/analysis/today?id=361&index=0&r=0.4784193145863376&token=";
-    private ProgressDialog mDialog;
     private CircleImageView headerIv;
     private TextView usernameTv;
     private IWXAPI api;
     private PopupWindow mPopupWindow;
+    private LinearLayout llSwitchDevice;
+    private TextView mTvDeviceName;
+    private PopupWindow mDevicePop;
+
+    private List<DeviceListEntity.DevicesBean> data = new ArrayList<>();
+    private LinearLayout llOutView;
+    private BluetoothAdapter mBtAdapter = null;
+    private int mState = UART_PROFILE_DISCONNECTED;
+    private BLEProtoProcess bleProtoProcess;
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+    private int timecount = 0;
+    private int runtype = 0;//0-未运行， 1-接收数据过程， 2-核对丢失帧过程
+    private String currentMacAddress;
+    private boolean isBltConnect = false;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean b = SPUitl.isFirstRun();
-        if(b){
+        findViewById(R.id.tv_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlTips.setVisibility(View.GONE);
+            }
+        });
+        llSwitchDevice = (LinearLayout) this.findViewById(R.id.ll_switch_device);
+        mTvDeviceName = (TextView) this.findViewById(R.id.tv_device_name);
+        bleProtoProcess = new BLEProtoProcess();
+        llSwitchDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Uri uri=Uri.parse("app://android.panda.toothbrush");
+//                Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+//                startActivity(intent);
+                if (data.size() != 0) {
+                    initPopDeviceList(data, true);
+                }
+            }
+        });
+        if (b) {
             rlContent.setVisibility(View.GONE);
             rlGuide.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rlContent.setVisibility(View.VISIBLE);
             rlGuide.setVisibility(View.GONE);
         }
+
         api = WXAPIFactory.createWXAPI(this, APP_ID);
         api.registerApp(APP_ID);
         mToolBarTtitle.setText(getResources().getString(R.string.app_name));
@@ -111,14 +193,28 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
                 }
             }
         });
-        loadData();
-    }
+        //检查权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Android M Permission check
+            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+            }
+        }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Log.d(TAG,"onNewIntent");
-//        loadData();
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBtAdapter == null) {
+            Toast.makeText(this, "该设备不支持蓝牙", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+        // 打开蓝牙
+        if (!mBtAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        } else {
+            getDeviceList();
+        }
+        loadData();
     }
 
     @Override
@@ -126,10 +222,8 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
         super.onResume();
     }
 
-    private void loadData(){
+    private void loadData() {
         if (SPUitl.isLogin()) {
-            mDialog = new ProgressDialog(this);
-            mDialog.setMessage("加载中....");
             mivHint.setVisibility(View.GONE);
             mWebView.setVisibility(View.VISIBLE);
             loadUrl(mUrl + SPUitl.getToken());
@@ -152,7 +246,14 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
     @SuppressWarnings("deprecation")
     @SuppressLint("SetJavaScriptEnabled")
     private void loadUrl(String url) {
+        setRefresh(true);
         mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView webView, String s) {
+                super.onPageFinished(webView, s);
+                setRefresh(false);
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return true;
@@ -160,8 +261,6 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
         });
         mWebView.setWebChromeClient(new WebChromeClient());
 
-
-        mDialog.show();
         WebSettings settings = mWebView.getSettings();
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);
@@ -172,21 +271,7 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
 //        settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setAllowContentAccess(true);
         settings.setAllowFileAccess(true);
-        mWebView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                Log.d("newProgress", "newProgress-->" + newProgress);
-                if (mDialog == null) {
-                    return;
-                }
-                if (newProgress == 100) {
-                    mDialog.dismiss();
-                    setRefresh(false);
-                }
-                super.onProgressChanged(view, newProgress);
-            }
 
-        });
         mWebView.loadUrl(url);
     }
 
@@ -194,11 +279,41 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
     public void requestDataRefresh() {
         super.requestDataRefresh();
         loadUrl(mUrl + SPUitl.getToken());
+//        bleProtoProcess.setIsreqenddatas(false);
+//        bleProtoProcess.setHasrecieved(false);
+        // 连接设备  传输数据  如果连接了就请求同步数据
+        if (isBltConnect) {
+            // 直接请求同步
+            Log.d(TAG, "直接同步数据");
+            appbar.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dismiss();
+                    tvIsConnect.setText("正在同步数据中...");
+                    mService.writeRXCharacteristic(bleProtoProcess.getRequests((byte) 1, (byte) 0));
+                    bleProtoProcess.setIsreqenddatas(false);
+                    bleProtoProcess.setHasrecieved(false);
+                }
+            }, 1000);
+        } else {
+            if (mDevice != null && mService != null) {
+                mService.disconnect();
+            }
+            if (data.size() > 0) {
+                mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(currentMacAddress);
+                Log.d(TAG, "currentMacAddress-->" + currentMacAddress);
+                mService.connect(currentMacAddress);
+            }
+        }
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (isBind) {
+            unbindService(mServiceConnection);
+        }
         if (mWebView != null) {
             mWebView.onPause();
             mWebView.clearCache(true);
@@ -206,7 +321,32 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
             mWebView.clearHistory();
             mWebView.destroy();
         }
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(UARTStatusChangeReceiver);
+        if (mService != null) {
+            mService.stopSelf();
+            mService.disconnect();
+            mService = null;
+            Log.d(TAG,"service 置空");
+        }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(this, "蓝牙打开成功", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,"onActivityResult");
+                    getDeviceList();
+
+                } else {
+                    // User did not enable Bluetooth or an error occurred
+                    Log.d(TAG, "BT not enabled");
+                    Toast.makeText(this, "不开启蓝牙将无法同步数据", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 
     @Override
@@ -249,7 +389,7 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
         return true;
     }
 
-    @OnClick({R.id.ll_member_point, R.id.ll_panda_store, R.id.ll_typeface, R.id.ll_wx_friend, R.id.btn,R.id.btn_dismiss})
+    @OnClick({R.id.ll_member_point, R.id.ll_panda_store, R.id.ll_typeface, R.id.ll_wx_friend, R.id.btn, R.id.btn_dismiss})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_member_point:
@@ -263,7 +403,7 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
                 Toasts.showShort("功能暂未开放");
                 break;
             case R.id.ll_typeface:
-                startActivity(new Intent(this,LanguageSwitchActivity.class));
+                startActivity(new Intent(this, LanguageSwitchActivity.class));
                 break;
             case R.id.btn:
                 SPUitl.clear();
@@ -295,7 +435,7 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
             View popView = getLayoutInflater().inflate(R.layout.action_overflow_popwindow, null);
             //popView即popupWindow的布局，ture设置focusAble.
             mPopupWindow = new PopupWindow(popView,
-                    (int)DensityUtil.dp(130),
+                    (int) DensityUtil.dp(130),
                     ViewGroup.LayoutParams.WRAP_CONTENT, true);
             //必须设置BackgroundDrawable后setOutsideTouchable(true)才会有效
             mPopupWindow.setBackgroundDrawable(new ColorDrawable());
@@ -316,8 +456,12 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
             popView.findViewById(R.id.ll_item2).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO 蓝牙
-                    startActivity(new Intent(UrlDetailActivity.this,AddBlueToothDeviceActivity.class));
+                    // 蓝牙
+//                    if(mService!= null){
+//                        mService.disconnect();
+//                    }
+                    Intent intent = new Intent(UrlDetailActivity.this, AddBlueToothDeviceActivity.class);
+                    startActivity(intent);
                     mPopupWindow.dismiss();
                 }
             });
@@ -326,4 +470,375 @@ public class UrlDetailActivity extends SwipeRefreshBaseActivity implements Navig
         }
 
     }
+
+    /**
+     * 弹出自定义的popWindow
+     */
+    public void initPopDeviceList(List<DeviceListEntity.DevicesBean> data, boolean isShowView) {
+        //获取状态栏高度
+        Rect frame = new Rect();
+        getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+        //状态栏高度+toolbar的高度
+        int yOffset = frame.top + appbar.getHeight();
+        if (null == mDevicePop) {
+            //初始化PopupWindow的布局
+            View popView = getLayoutInflater().inflate(R.layout.pop_device_list, null);
+            //popView即popupWindow的布局，ture设置focusAble.
+            WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+            int popHeight = wm.getDefaultDisplay().getHeight() - yOffset;
+            mDevicePop = new PopupWindow(popView,
+                    ViewGroup.LayoutParams.MATCH_PARENT, popHeight
+                    , true);
+            //必须设置BackgroundDrawable后setOutsideTouchable(true)才会有效
+            mDevicePop.setBackgroundDrawable(new ColorDrawable());
+            //点击外部关闭。
+            mDevicePop.setOutsideTouchable(true);
+            //设置一个动画。
+            mDevicePop.setAnimationStyle(android.R.style.Animation_Dialog);
+            //设置Gravity，让它显示在右上角。
+            if (isShowView) {
+                mDevicePop.showAtLocation(appbar, Gravity.TOP, 0, yOffset);
+            }
+            //设置点击事件
+            RecyclerView rv = (RecyclerView) popView.findViewById(R.id.rv);
+            llOutView = (LinearLayout) popView.findViewById(R.id.ll_out_view);
+            llOutView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDevicePop.dismiss();
+                }
+            });
+            rv.setLayoutManager(new LinearLayoutManager(this));
+            rv.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.VERTICAL, 1));
+            PopDeviceAdapter popDeviceAdapter = new PopDeviceAdapter(data);
+            popDeviceAdapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(View v, int position) {
+                    if (mService != null) {
+                        tvIsConnect.setText("连接中...");
+                        mTvDeviceName.setText(data.get(position).getUsername());
+                        StringBuffer sb = new StringBuffer(data.get(position).getDeviceid());
+                        for (int i = 0; i < sb.length(); i++) {
+                            if (i % 3 == 0) {
+                                sb.insert(i, ":");
+                            }
+                        }
+                        sb.delete(0, 1);
+                        currentMacAddress = sb.toString();
+                        if (mDevice != null) {
+                            mService.disconnect();
+                        }
+                        if (data.size() > 0) {
+                            mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(currentMacAddress);
+                            mService.connect(currentMacAddress);
+                        }
+                        mDevicePop.dismiss();
+                    } else {
+                        Toasts.showShort("蓝牙设备没有初始化");
+                    }
+
+                }
+            });
+            rv.setAdapter(popDeviceAdapter);
+        } else {
+            if (isShowView) {
+                mDevicePop.showAtLocation(appbar, Gravity.TOP, 0, yOffset);
+            }
+        }
+
+    }
+
+    private void getDeviceList() {
+        APIService api = new APIFactory().create(APIService.class);
+        Subscription s = api.getDeviceList(SPUitl.getToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<DeviceListEntity>() {
+                    @Override
+                    public void call(DeviceListEntity deviceListEntity) {
+                        if (Constants.SUCCESS == deviceListEntity.getCode()) {
+
+                            data.clear();
+                            if (deviceListEntity.getDevices().size() != 0) {
+                                llSwitchDevice.setVisibility(View.VISIBLE);
+                                mToolBarTtitle.setVisibility(View.GONE);
+                                for (DeviceListEntity.DevicesBean db : deviceListEntity.getDevices()) {
+                                    if (!db.getDeviceid().contains(":")) {
+                                        data.add(db);
+                                    }
+                                }
+//                                data = deviceListEntity.getDevices();
+//                                initPopDeviceList(deviceListEntity.getDevices(),false);
+                                mTvDeviceName.setText(data.get(0).getUsername() + "-" + data.get(0).getDeviceid());
+                                service_init();
+                                //TODO 连接设备，修改连接提示
+                                tvIsConnect.setText("连接中...");
+                            } else {
+                                llSwitchDevice.setVisibility(View.GONE);
+                                mToolBarTtitle.setVisibility(View.VISIBLE);
+
+                            }
+
+                        } else {
+                            Toasts.showShort(deviceListEntity.getMessage());
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Toasts.showShort("登录失败，请检查网络");
+                        Log.d("throwable", "throwable-->" + throwable.toString());
+                    }
+                });
+        addSubscription(s);
+    }
+
+    private boolean isBind = false;
+    private BluetoothDevice mDevice = null;
+    public  static UartService mService = null;
+
+
+    private void service_init() {
+        Intent bindIntent = new Intent(this, UartService.class);
+        isBind = bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        LocalBroadcastManager.getInstance(this).registerReceiver(UARTStatusChangeReceiver, makeGattUpdateIntentFilter());
+    }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder rawBinder) {
+            mService = ((UartService.LocalBinder) rawBinder).getService();
+            Log.d(TAG, "onServiceConnected mService= " + mService);
+            if (mService.initialize()) {
+                if (data.size() > 0) {
+                    StringBuffer sb = new StringBuffer(data.get(0).getDeviceid());
+                    for (int i = 0; i < sb.length(); i++) {
+                        if (i % 3 == 0) {
+                            sb.insert(i, ":");
+                        }
+                    }
+                    sb.delete(0, 1);
+                    currentMacAddress = sb.toString();
+                    mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(currentMacAddress);
+                    mService.connect(currentMacAddress);
+                }
+            } else {
+                Log.e(TAG, "Unable to initialize Bluetooth");
+                finish();
+            }
+
+        }
+
+        public void onServiceDisconnected(ComponentName classname) {
+            ////     mService.disconnect(mDevice);
+            Log.d(TAG, "classname--->"+classname.getClassName());
+        }
+    };
+
+    private static IntentFilter makeGattUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(UartService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(UartService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(UartService.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(UartService.ACTION_DATA_AVAILABLE);
+        intentFilter.addAction(UartService.DEVICE_DOES_NOT_SUPPORT_UART);
+        return intentFilter;
+    }
+
+
+    Timer timer = null;
+    private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
+
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.d(TAG,"action-->"+action);
+            if (action.equals(UartService.ACTION_GATT_CONNECTED)) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        isBltConnect = true;
+                        mState = UART_PROFILE_CONNECTED;
+//                        bleProtoProcess.clearLog();
+                        appbar.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dismiss();
+                                tvIsConnect.setText("正在同步数据中...");
+                                Log.d("writeRXCharacteristic","writeRXCharacteristic");
+                                mService.writeRXCharacteristic(bleProtoProcess.getRequests((byte) 1, (byte) 0));
+                                bleProtoProcess.setIsreqenddatas(false);
+                                bleProtoProcess.setHasrecieved(false);
+                            }
+                        }, 1000);
+                    }
+                });
+            }
+            if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        isBltConnect = false;
+                        dismiss();
+                        tvIsConnect.setText("未连接");
+                        mState = UART_PROFILE_DISCONNECTED;
+                    }
+                });
+            }
+            if (action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED)) {
+                mService.enableTXNotification();
+            }
+            if (action.equals(UartService.ACTION_DATA_AVAILABLE)) {
+                timecount = 0;
+                final byte[] txValue = intent.getByteArrayExtra(UartService.EXTRA_DATA);
+                int status = bleProtoProcess.interp(txValue);
+
+                switch (status) {
+                    case BLEProtoProcess.BLE_DATA_START:
+                    case BLEProtoProcess.BLE_RESULT_START:
+                        Log.d(TAG,"BLE_DATA_START  and  BLE_RESULT_START");
+                        bleProtoProcess.setHasrecieved(true);
+                        runtype = 1;
+                        timer = new Timer();
+                        timer.schedule(new DataProcessTimer(), 0, 200);
+                        break;
+                    case BLEProtoProcess.BLE_DATA_RECEIVER:
+                        break;
+                    case BLEProtoProcess.BLE_DATA_END:
+                    case BLEProtoProcess.BLE_RESULT_END:
+                        runtype = 2;
+                        timecount = 100;
+                        break;
+                    case BLEProtoProcess.BLE_MISSED_RECEIVER:
+                        break;
+                    case BLEProtoProcess.BLE_MISSED_END:
+                        Log.d(TAG, "丢失帧接受完毕");
+                        timecount = 100;
+                        break;
+                    case BLEProtoProcess.BLE_NO_SYNC://没有同步数据
+                        if (bleProtoProcess.isHasrecieved()) {
+                            Log.d(TAG,"请求动画");
+                            bleProtoProcess.setIsreqenddatas(true);
+                            mService.writeRXCharacteristic(bleProtoProcess.getRequests((byte) 0, (byte) 1));
+                        } else {
+                            Log.d(TAG,"没有数据同步");
+                            tvIsConnect.setText("已连接");
+                            rlTips.setVisibility(View.VISIBLE);
+                            Toasts.showShort("没有数据同步");
+                        }
+                        break;
+                }
+
+
+            }
+            //*********************//
+            if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART)) {
+                Log.d(TAG, "Device doesn't support UART. Disconnecting");
+                mService.disconnect();
+            }
+
+
+        }
+    };
+
+    class DataProcessTimer extends TimerTask {  //1s
+
+        @Override
+        public void run() {
+            Log.d(TAG, "计时器开始执行" + "count-->" + timecount);
+            if (runtype == 0)                            //非接收数据过程，什么也不执行，
+            {                                            //可以释放timer
+                timecount = 0;
+                return;
+            } else {
+                //1 接收数据    2-核对数据
+                if ((runtype == 1 && timecount >= 10) ||
+                        (runtype == 2 && timecount >= 4)) {
+                    timecount = 0;
+                    if (checkData()) {
+                        runtype = 0;
+                        timer.cancel();
+                    }
+                }
+                timecount++;
+            }
+        }
+    }
+
+    private boolean checkData() {
+        try {
+
+            if (bleProtoProcess.checkMissed()) {
+                Log.d(TAG, "丢帧");
+                byte[] miss = bleProtoProcess.getMissedRequests();
+                mService.writeRXCharacteristic(miss);
+                return false;
+            } else {
+
+                //1.发送请求成功帧  2.把数据交给后台处理
+                Log.d(TAG, "数据接收完毕!");
+                //mService.writeRXCharacteristic(bleProtoProcess.getCompleted());
+                byte[] b = bleProtoProcess.getCompleted();
+                Log.d(TAG, "b-->" + Arrays.toString(b));
+                mService.writeRXCharacteristic(b);
+                Log.d(TAG, "mService-->" + mService.toString());
+
+                //------------发送数据到服务器
+                if (bleProtoProcess.isreqenddatas()) {
+                    uploadData();
+                }
+                return true;
+            }
+        } catch (IllegalAccessException e) {
+            Toast.makeText(UrlDetailActivity.this, "异常", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private void uploadData() {
+        APIService api = new APIFactory().create(APIService.class);
+        String addr = currentMacAddress.replaceAll(":", "");
+        String str = "设备地址：" + addr + "-" + "Software：" + bleProtoProcess.getSoftware() + "-" +
+                "Factory：" + bleProtoProcess.getFactory() + "-" + "Model：" + bleProtoProcess.getModel() + "-" +
+                "Power：" + bleProtoProcess.getPower() + "-" + "Time：" + bleProtoProcess.getTime() + "-" +
+                "Hardware：" + bleProtoProcess.getHardware() + "-" + bleProtoProcess.getDatatype() + "-";
+        Log.d(TAG, "str-->" + str);
+
+        Subscription s = api.uploadData(addr, bleProtoProcess.getSoftware() + "",
+                bleProtoProcess.getFactory() + "", bleProtoProcess.getModel() + "",
+                bleProtoProcess.getPower() + "", bleProtoProcess.getTime() + "",
+                bleProtoProcess.getHardware() + "", bleProtoProcess.getBuffer(), bleProtoProcess.getDatatype() + "")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<WXEntity>() {
+                    @Override
+                    public void call(WXEntity wxEntity) {
+                        if (Constants.SUCCESS == wxEntity.getCode()) {
+                            tvIsConnect.setText("已连接");
+                            rlTips.setVisibility(View.VISIBLE);
+                            tvUpdateRecord.setText("总共上传数据" + bleProtoProcess.getPagesSize() + "条，成功" + bleProtoProcess.getPagesSize() + "条，失败0条");
+                        } else if (99 == wxEntity.getCode()) {
+                            rlTips.setVisibility(View.VISIBLE);
+                            tvUpdateRecord.setText("总共上传数据" + 0 + "条，成功" + 0 + "条，失败" + bleProtoProcess.getPagesSize() + "条");
+                            Toasts.showShort("系统错误");
+                        } else if (20002 == wxEntity.getCode()) {
+                            rlTips.setVisibility(View.VISIBLE);
+                            tvUpdateRecord.setText("总共上传数据" + 0 + "条，成功" + 0 + "条，失败" + bleProtoProcess.getPagesSize() + "条");
+                            Toasts.showShort("设备版本未找到");
+                        } else {
+                            Toasts.showShort("未知错误");
+                            rlTips.setVisibility(View.VISIBLE);
+                            tvUpdateRecord.setText("总共上传数据" + 0 + "条，成功" + 0 + "条，失败" + bleProtoProcess.getPagesSize() + "条");
+                            Log.d(TAG, "错误code ：" + wxEntity.getCode() + "错误信息：" + wxEntity.getMessage());
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Toasts.showShort("数据上传失败，请检查网络！");
+                        rlTips.setVisibility(View.VISIBLE);
+                        tvUpdateRecord.setText("总共上传数据" + 0 + "条，成功" + 0 + "条，失败" + bleProtoProcess.getPagesSize() + "条");
+                    }
+                });
+        addSubscription(s);
+    }
+
+
 }

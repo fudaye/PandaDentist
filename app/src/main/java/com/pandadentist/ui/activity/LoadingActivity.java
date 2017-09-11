@@ -78,7 +78,7 @@ public class LoadingActivity extends SwipeRefreshBaseActivity {
 
     private void bindDevice(String mac) {
         APIService api = new APIFactory().create(APIService.class);
-        Subscription s = api.bindDevice(mac, SPUitl.getToken())
+        Subscription s = api.bindDevice(mac.replaceAll(":",""), SPUitl.getToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<WXEntity>() {

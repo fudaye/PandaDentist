@@ -16,9 +16,12 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!--wifi 配网demo-->
-    <uses-feature android:required="true" android:name="android.hardware.wifi"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <application
         android:name="com.pandadentist.App"
@@ -26,8 +29,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme">
         <activity android:name="com.pandadentist.ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,41 +38,54 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.BlueHelperActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".ui.activity.DeviceListActivity"/>
-        <activity android:name=".ui.activity.AddBlueToothDeviceActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.RealTimeBrushToothActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="android.panda.toothbrush"
+                    android:scheme="app"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activity.BlueHelperActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.DeviceListActivity" />
+        <activity
+            android:name=".ui.activity.AddBlueToothDeviceActivity"
+            android:screenOrientation="portrait" />
 
 
-        <activity android:name=".ui.activity.LoginActivity"
-            android:launchMode="singleTop"
-            />
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:launchMode="singleTop" />
 
-        <activity android:name=".ui.activity.LanguageSwitchActivity"
-            android:screenOrientation="portrait"
-            />
+        <activity
+            android:name=".ui.activity.LanguageSwitchActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.hiflying.smartlink.v7.MulticastSmartLinkerActivity"
             android:configChanges="mcc|mnc|locale|keyboard|keyboardHidden|navigation|orientation|screenSize|fontScale"
-            android:screenOrientation="portrait"
-            android:label="MulticastSmartLinkerActivity"/>
-        <activity android:name=".ui.activity.SmartLinkerWrapperActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".ui.activity.GuideActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".ui.activity.AddDeviceActivity"
-            android:screenOrientation="portrait"
-            />
+            android:label="MulticastSmartLinkerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SmartLinkerWrapperActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.GuideActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.AddDeviceActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.pandadentist.ui.activity.UrlDetailActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.ConfigWifiActivity"
             android:screenOrientation="portrait" />
@@ -92,10 +107,13 @@
         <activity
             android:name=".configwifi.android.AboutActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.EmailRegisterActivity"
-            android:screenOrientation="portrait"
-            />
-        <service android:enabled="true" android:name=".service.UartService" />
+        <activity
+            android:name=".ui.activity.EmailRegisterActivity"
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name=".service.UartService"
+            android:enabled="true" />
     </application>
 
 </manifest>

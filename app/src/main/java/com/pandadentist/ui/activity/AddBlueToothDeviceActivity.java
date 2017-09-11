@@ -7,22 +7,19 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.ClipboardManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -44,6 +41,7 @@ import com.pandadentist.service.UartService;
 import com.pandadentist.ui.adapter.BlueToothDeviceAdapter;
 import com.pandadentist.ui.base.SwipeRefreshBaseActivity;
 import com.pandadentist.util.BLEProtoProcess;
+import com.pandadentist.util.SPUitl;
 import com.pandadentist.util.Toasts;
 import com.pandadentist.widget.ColorProgressBar;
 import com.pandadentist.widget.RecycleViewDivider;
@@ -59,6 +57,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+
+import static com.pandadentist.ui.activity.UrlDetailActivity.mService;
 
 /**
  * Created by fudaye on 2017/8/17.
@@ -84,8 +84,6 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
     LinearLayout llLoadingTip;
     @Bind(R.id.rv)
     RecyclerView rv;
-    @Bind(R.id.ll_device)
-    LinearLayout llDevice;
     @Bind(R.id.iv_loading)
     ImageView ivLoading;
     @Bind(R.id.iv_upload_loading)
@@ -98,10 +96,10 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
     TextView tvUploadTip;
     @Bind(R.id.ll_upload)
     LinearLayout llUpload;
+    @Bind(R.id.tv_page_size)
+    TextView tvPageSize;
 
 
-    private int mState = UART_PROFILE_DISCONNECTED;
-    private UartService mService = null;
     private BluetoothDevice mDevice = null;
     private BluetoothAdapter mBtAdapter = null;
     private BLEProtoProcess bleProtoProcess;
@@ -114,19 +112,25 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
     private boolean isBind = false;
     private BluetoothLeScanner bluetoothLeScanner;
     private String macAddress;
+    private Animation circle_anim;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (UrlDetailActivity.mService != null && !UrlDetailActivity.mService.initialize()) {
+            Log.d("", "不用初始化 service  直接读写数据");
+            Toasts.showShort("Service 初始化失败");
+            finish();
+        }
         mToolBarTtitle.setText("连接蓝牙");
         mToolbarFuncTv.setText("帮助");
         mToolbarFuncTv.setTextColor(Color.parseColor("#20CBE7"));
         mToolbarFuncRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AddBlueToothDeviceActivity.this,BlueHelperActivity.class));
+                startActivity(new Intent(AddBlueToothDeviceActivity.this, BlueHelperActivity.class));
             }
         });
         bleProtoProcess = new BLEProtoProcess();
@@ -142,7 +146,7 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
             }
         });
         //开启动画
-        Animation circle_anim = AnimationUtils.loadAnimation(this, R.anim.blue_tooth_round_rotate);
+        circle_anim = AnimationUtils.loadAnimation(this, R.anim.blue_tooth_round_rotate);
         LinearInterpolator interpolator = new LinearInterpolator();  //设置匀速旋转，在xml文件中设置会出现卡顿
         circle_anim.setInterpolator(interpolator);
         ivLoading.startAnimation(circle_anim);
@@ -193,12 +197,10 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
+                // 先绑定，在连接蓝牙
+                // 绑定蓝牙设备
                 String deviceAddress = devices.get(position).getAddress();
-                mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
-                Log.d(TAG, "... onActivityResultdevice.address==" + mDevice + "mserviceValue" + mService);
-                macAddress = devices.get(position).getAddress();
-//                ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - connecting");
-                mService.connect(deviceAddress);
+                bindDevice(deviceAddress);
 
             }
         });
@@ -212,39 +214,44 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
         service_init();
     }
 
-    //UART service connected/disconnected
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder rawBinder) {
-            mService = ((UartService.LocalBinder) rawBinder).getService();
-            Log.d(TAG, "onServiceConnected mService= " + mService);
-            if (!mService.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
-                finish();
-            }
-
-        }
-
-        public void onServiceDisconnected(ComponentName classname) {
-            ////     mService.disconnect(mDevice);
-            mService = null;
-        }
-    };
+//    //UART service connected/disconnected
+//    private ServiceConnection mServiceConnection = new ServiceConnection() {
+//        public void onServiceConnected(ComponentName className, IBinder rawBinder) {
+//            mService = ((UartService.LocalBinder) rawBinder).getService();
+//            Log.d(TAG, "onServiceConnected mService= " + mService);
+//            if (!mService.initialize()) {
+//                Log.e(TAG, "Unable to initialize Bluetooth");
+//                finish();
+//            }
+//
+//        }
+//
+//        public void onServiceDisconnected(ComponentName classname) {
+//            ////     mService.disconnect(mDevice);
+//            mService = null;
+//        }
+//    };
 
     Timer timer = null;
     private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Log.d(TAG, "action-->" + action);
             if (action.equals(UartService.ACTION_GATT_CONNECTED)) {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Toasts.showShort("蓝牙连接成功");
-                        mState = UART_PROFILE_CONNECTED;
+//                        mState = UART_PROFILE_CONNECTED;
 //                        bleProtoProcess.clearLog();
                         rv.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mService.writeRXCharacteristic(bleProtoProcess.getRequests());
+                                dismiss();
+                                Log.d("writeRXCharacteristic$$", "writeRXCharacteristic$$");
+                                mService.writeRXCharacteristic(bleProtoProcess.getRequests((byte) 1, (byte) 0));
+                                bleProtoProcess.setIsreqenddatas(false);
+                                bleProtoProcess.setHasrecieved(false);
                             }
                         }, 2000);
                     }
@@ -253,8 +260,9 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
             if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
                 runOnUiThread(new Runnable() {
                     public void run() {
+                        dismiss();
                         Toasts.showShort("断开蓝牙连接");
-                        mState = UART_PROFILE_DISCONNECTED;
+//                        mState = UART_PROFILE_DISCONNECTED;
                         mService.close();
                     }
                 });
@@ -269,31 +277,37 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
 
                 switch (status) {
                     case BLEProtoProcess.BLE_DATA_START:
+                    case BLEProtoProcess.BLE_RESULT_START:
+                        bleProtoProcess.setHasrecieved(true);
                         showUpload();
                         runtype = 1;
-                        Toast.makeText(AddBlueToothDeviceActivity.this, "开始接受数据", Toast.LENGTH_SHORT).show();
                         timer = new Timer();
                         timer.schedule(new DataProcessTimer(), 0, 200);
                         break;
                     case BLEProtoProcess.BLE_DATA_RECEIVER:
                         break;
                     case BLEProtoProcess.BLE_DATA_END:
+                    case BLEProtoProcess.BLE_RESULT_END:
                         runtype = 2;
-                        //timer.cancel();
                         timecount = 100;
-                        //if(checkData()) runtype = 0;
                         break;
                     case BLEProtoProcess.BLE_MISSED_RECEIVER:
-                        //检测丢帧
-                        //timer.cancel();
                         break;
                     case BLEProtoProcess.BLE_MISSED_END:
                         Log.d(TAG, "丢失帧接受完毕");
-                        //if(checkData())     runtype = 0;
                         timecount = 100;
                         break;
-                    case BLEProtoProcess.BLE_NO_SYNC:
-                        //timer.cancel();
+                    case BLEProtoProcess.BLE_NO_SYNC://没有同步数据
+                        if (bleProtoProcess.isHasrecieved()) {
+                            bleProtoProcess.setIsreqenddatas(true);
+                            mService.writeRXCharacteristic(bleProtoProcess.getRequests((byte) 0, (byte) 1));
+                        } else {
+                            showUpload();
+                            ivUploadLoading.clearAnimation();
+                            tvUploadTip.setText("设备暂无最新数据");
+                            tvPercent.setText("100%");
+                            colorProgressBar.setProgressColor();
+                        }
                         break;
                 }
 
@@ -311,20 +325,14 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
 
     private boolean checkData() {
         try {
-            rv.post(new Runnable() {
-                @Override
-                public void run() {
-                    colorProgressBar.setValue(99);
-                    tvPercent.setText("99%");
-                    bleProtoProcess.removeZhenListener();
-                }
-            });
+
             if (bleProtoProcess.checkMissed()) {
                 Log.d(TAG, "丢帧");
                 byte[] miss = bleProtoProcess.getMissedRequests();
                 mService.writeRXCharacteristic(miss);
                 return false;
             } else {
+
                 //1.发送请求成功帧  2.把数据交给后台处理
                 Log.d(TAG, "数据接收完毕!");
                 //mService.writeRXCharacteristic(bleProtoProcess.getCompleted());
@@ -334,10 +342,18 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
                 Log.d(TAG, "mService-->" + mService.toString());
 
                 //------------发送数据到服务器
-                final String base64 = bleProtoProcess.getBuffer();
-                Log.d(TAG, "base64-->" + base64);
-                uploadData();
-
+                if (bleProtoProcess.isreqenddatas()) {
+                    rv.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            colorProgressBar.setValue(99);
+                            tvPercent.setText("99%");
+                            bleProtoProcess.removeZhenListener();
+                        }
+                    });
+                    Toasts.showShort("已收到刷牙数据，请保持网络连接畅通完成上传!");
+                    uploadData();
+                }
                 return true;
             }
         } catch (IllegalAccessException e) {
@@ -348,8 +364,8 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
     }
 
     private void service_init() {
-        Intent bindIntent = new Intent(this, UartService.class);
-        isBind = bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+//        Intent bindIntent = new Intent(this, UartService.class);
+//        isBind = bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
         LocalBroadcastManager.getInstance(this).registerReceiver(UARTStatusChangeReceiver, makeGattUpdateIntentFilter());
     }
 
@@ -378,19 +394,17 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
                     Log.d(TAG, "... onActivityResultdevice.address==" + mDevice + "mserviceValue" + mService);
                     ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - connecting");
                     mService.connect(deviceAddress);
-
-
                 }
                 break;
             case REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
-                    Toast.makeText(this, "Bluetooth has turned on ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "蓝牙打开成功", Toast.LENGTH_SHORT).show();
                     init();
                 } else {
                     // User did not enable Bluetooth or an error occurred
                     Log.d(TAG, "BT not enabled");
-                    Toast.makeText(this, "Problem in BT Turning ON ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "蓝牙不可用", Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 break;
@@ -412,18 +426,12 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
         switch (requestCode) {
             case PERMISSION_REQUEST_COARSE_LOCATION:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // TODO request success
+                    //  request success
                 }
                 break;
         }
     }
 
-    public void copy(String content, Context context) {
-// 得到剪贴板管理器
-        ClipboardManager cmb = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        cmb.setText(content.trim());
-        Toast.makeText(AddBlueToothDeviceActivity.this, "复制成功", Toast.LENGTH_LONG).show();
-    }
 
     class DataProcessTimer extends TimerTask {  //1s
 
@@ -450,43 +458,49 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
     }
 
 
-
     private void showNotFound() {
-        llLoading.setVisibility(View.VISIBLE);
-        llDevice.setVisibility(View.GONE);
-        llLoadingTip.setVisibility(View.GONE);
-        llNotFound.setVisibility(View.VISIBLE);
+        if (rv != null) {
+            rv.setEnabled(true);
+            ivLoading.clearAnimation();
+            llLoading.setVisibility(View.VISIBLE);
+            llLoadingTip.setVisibility(View.GONE);
+            llNotFound.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showList() {
-        if(llLoading == null){
-            return;
+        if (rv != null) {
+            rv.setEnabled(true);
+            ivLoading.clearAnimation();
+            llLoading.setVisibility(View.VISIBLE);
+            llLoadingTip.setVisibility(View.VISIBLE);
+            llNotFound.setVisibility(View.GONE);
         }
-        llLoading.setVisibility(View.GONE);
-        llDevice.setVisibility(View.VISIBLE);
-        llLoadingTip.setVisibility(View.GONE);
-        llNotFound.setVisibility(View.GONE);
+
     }
 
     private void showLoadingView() {
-        llLoading.setVisibility(View.VISIBLE);
-        llDevice.setVisibility(View.GONE);
-        llLoadingTip.setVisibility(View.VISIBLE);
-        llNotFound.setVisibility(View.GONE);
+        if (rv != null) {
+            rv.setEnabled(true);
+            ivLoading.startAnimation(circle_anim);
+            llLoading.setVisibility(View.VISIBLE);
+            llLoadingTip.setVisibility(View.VISIBLE);
+            llNotFound.setVisibility(View.GONE);
+        }
+
     }
 
     private void showUpload() {
-        llLoading.setVisibility(View.GONE);
-        llDevice.setVisibility(View.GONE);
-        llLoadingTip.setVisibility(View.GONE);
-        llNotFound.setVisibility(View.GONE);
-        llUpload.setVisibility(View.VISIBLE);
-        //开启动画
-        Animation circle_anim = AnimationUtils.loadAnimation(this, R.anim.blue_tooth_round_rotate);
-        LinearInterpolator interpolator = new LinearInterpolator();  //设置匀速旋转，在xml文件中设置会出现卡顿
-        circle_anim.setInterpolator(interpolator);
-        ivUploadLoading.startAnimation(circle_anim);
-        tvUploadTip.setText("数据正在上传");
+        if (rv != null) {
+            rv.setEnabled(true);
+            llLoading.setVisibility(View.GONE);
+            llLoadingTip.setVisibility(View.GONE);
+            llNotFound.setVisibility(View.GONE);
+            llUpload.setVisibility(View.VISIBLE);
+            //开启动画
+            ivUploadLoading.startAnimation(circle_anim);
+            tvUploadTip.setText("数据正在上传");
+        }
     }
 
     private Handler mHandler = new Handler();
@@ -524,45 +538,48 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
     public void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(UARTStatusChangeReceiver);
-        if (isBind) {
-            unbindService(mServiceConnection);
-        }
-        if (mService != null) {
-            mService.stopSelf();
-            mService = null;
-        }
+//        if (isBind) {
+//            unbindService(mServiceConnection);
+//        }
+//        if (mService != null) {
+//            mService.stopSelf();
+//            mService.disconnect();
+//            mService = null;
+//        }
         mHandler.removeCallbacks(scanRunnable);
         mBtAdapter.stopLeScan(mLeScanCallback);
+
     }
 
 
     private void uploadData() {
         APIService api = new APIFactory().create(APIService.class);
-        String addr = macAddress.replaceAll(":","");
-        String str = "设备地址："+addr+"-"+"Software："+bleProtoProcess.getSoftware() +"-"+
-                "Factory："+bleProtoProcess.getFactory()+"-"+"Model："+bleProtoProcess.getModel()+"-"+
-                "Power："+bleProtoProcess.getPower()+"-"+"Time："+bleProtoProcess.getTime()+"-"+
-                "Hardware："+bleProtoProcess.getHardware()+"-";
-
+        String addr = macAddress.replaceAll(":", "");
+        String str = "设备地址：" + addr + "-" + "Software：" + bleProtoProcess.getSoftware() + "-" +
+                "Factory：" + bleProtoProcess.getFactory() + "-" + "Model：" + bleProtoProcess.getModel() + "-" +
+                "Power：" + bleProtoProcess.getPower() + "-" + "Time：" + bleProtoProcess.getTime() + "-" +
+                "Hardware：" + bleProtoProcess.getHardware() + "-" + bleProtoProcess.getDatatype() + "-";
+        Log.d(TAG, "str-->" + str);
 
         Subscription s = api.uploadData(addr, bleProtoProcess.getSoftware() + "",
                 bleProtoProcess.getFactory() + "", bleProtoProcess.getModel() + "",
                 bleProtoProcess.getPower() + "", bleProtoProcess.getTime() + "",
-                bleProtoProcess.getHardware() + "", bleProtoProcess.getBuffer())
+                bleProtoProcess.getHardware() + "", bleProtoProcess.getBuffer(), bleProtoProcess.getDatatype() + "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<WXEntity>() {
                     @Override
                     public void call(WXEntity wxEntity) {
-
                         if (Constants.SUCCESS == wxEntity.getCode()) {
                             Toasts.showShort("上传成功");
+                            ivUploadLoading.clearAnimation();
                             tvUploadTip.setText("上传成功");
                             tvPercent.setText("100%");
                             colorProgressBar.setProgressColor();
-                        }else if (99 == wxEntity.getCode()){
+                            tvPageSize.setText("一共上传" + bleProtoProcess.getPagesSize() + "次刷牙记录");
+                        } else if (99 == wxEntity.getCode()) {
                             Toasts.showShort("系统错误");
-                        }else if (20002 == wxEntity.getCode()){
+                        } else if (20002 == wxEntity.getCode()) {
                             Toasts.showShort("设备版本未找到");
                         } else {
                             Toasts.showShort("未知错误");
@@ -572,6 +589,7 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        Toasts.showShort("服务器连接失败，请检查网络！");
                         Log.d("throwable", "throwable-->" + throwable.toString());
                     }
                 });
@@ -580,22 +598,52 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
 
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
 
+        @Override
+        public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
+            runOnUiThread(new Runnable() {
                 @Override
-                public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (devices.size() != 0) {
-                                showList();
-                            }
-                            String s = device.getName();
-                            if (!devices.contains(device)) {
-                                devices.add(device);
-                                mAdapter.setData(devices);
-                            }
-                            Log.d("onScanResult", "onScanResult" + s);
+                public void run() {
+                    if (devices.size() != 0) {
+                        showList();
+                    }
+                    String mac = device.getAddress();
+                    if (!devices.contains(device)) {
+                        // 添加设备
+                        if (!TextUtils.isEmpty(device.getName()) && device.getName().contains("PBrush")) {
+                            devices.add(device);
+                            mAdapter.setData(devices);
                         }
-                    });
+                    }
+                    Log.d("onScanResult", "onScanResult" + mac);
                 }
-            };
+            });
+        }
+    };
+
+    private void bindDevice(String mac) {
+        showProgress();
+        APIService api = new APIFactory().create(APIService.class);
+        Subscription s = api.bindDevice(mac.replaceAll(":", ""), SPUitl.getToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<WXEntity>() {
+                    @Override
+                    public void call(WXEntity wxEntity) {
+                        mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mac);
+                        macAddress = mac;
+                        if (mService != null) {
+                            mService.disconnect();
+                            mService.connect(mac);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        dismiss();
+                        Toasts.showShort("服务器连接失败！请检查手机网络！");
+                        Log.d("throwable", "throwable-->" + throwable.toString());
+                    }
+                });
+        addSubscription(s);
+    }
 }

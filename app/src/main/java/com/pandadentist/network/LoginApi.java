@@ -1,7 +1,6 @@
 package com.pandadentist.network;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Looper;

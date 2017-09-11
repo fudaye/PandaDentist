@@ -66,6 +66,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.androidadvance:topsnackbar:1.1.1'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'

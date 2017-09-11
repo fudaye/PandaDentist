@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="130dp"
     android:layout_height="wrap_content"
-    android:background="@android:color/black"
+    android:background="#464646"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -11,27 +11,49 @@
         android:id="@+id/ll_item1"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:orientation="horizontal"
         android:gravity="center">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="23dp"
+            android:src="@drawable/ic_blt_brush"
+            android:layout_marginRight="10dp"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="WIFI"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#3A3939"
+        />
 
     <LinearLayout
         android:id="@+id/ll_item2"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:orientation="horizontal"
         android:gravity="center">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="23dp"
+            android:src="@drawable/ic_blt_brush"
+            android:layout_marginRight="10dp"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="蓝牙"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
     </LinearLayout>
 </LinearLayout>

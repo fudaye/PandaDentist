@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="30dp">
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/iv"
-        android:layout_width="51dp"
-        android:layout_height="51dp"
+        android:layout_width="25dp"
+        android:layout_height="33dp"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_toothbrush" />
+        android:src="@drawable/ic_blue_tooth" />
 
     <TextView
         android:id="@+id/tv"
@@ -21,12 +21,16 @@
         android:textColor="@color/black"
         android:textSize="13sp" />
 
-    <ImageView
-        android:layout_width="11dp"
-        android:layout_height="18dp"
-        android:layout_alignParentRight="true"
+    <Button
+        android:id="@+id/btn_add"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:textSize="11sp"
+        android:text="添加"
+        android:textColor="@android:color/white"
+        android:background="@drawable/btn_add_bg"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_arrow_right_gray" />
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

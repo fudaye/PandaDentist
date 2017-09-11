@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
-    <include layout="@layout/layout_appbar"/>
+    <include layout="@layout/layout_appbar" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -18,11 +18,11 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
+                android:layout_height="150dp">
 
                 <ImageView
                     android:id="@+id/iv_loading"
@@ -75,8 +75,20 @@
                         android:text="会自动识别您的设备"
                         android:textColor="#4FD4EB"
                         android:textSize="15sp" />
-                </LinearLayout>
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/lineColor" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/ll_not_found"
@@ -123,37 +135,11 @@
                         android:textSize="17sp" />
                 </LinearLayout>
 
+
             </FrameLayout>
 
         </LinearLayout>
 
-        <!--数据显示页面-->
-        <LinearLayout
-            android:id="@+id/ll_device"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="附近设备"
-                android:textColor="@color/gray" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/lineColor" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
 
         <!--数据上传-->
         <LinearLayout
@@ -161,8 +147,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
-            android:visibility="gone"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -187,15 +173,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center|center_vertical"
-                >
+                android:orientation="horizontal">
 
                 <com.pandadentist.widget.ColorProgressBar
                     android:id="@+id/circle_progress_bar1"
                     android:layout_width="200dp"
-                    android:layout_height="5dp"
-                    />
+                    android:layout_height="5dp" />
 
                 <TextView
                     android:id="@+id/tv_percent"
@@ -204,22 +188,27 @@
                     android:layout_marginLeft="5dp"
                     android:text="0%"
                     android:textColor="#20CBE7"
-                    android:textSize="16sp"
-                    />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_upload_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_gravity="center"
-                android:textSize="20sp"
+                android:layout_marginTop="20dp"
                 android:textColor="#FF618E"
-                tools:text="上传成功"
-                />
+                android:textSize="20sp"
+                tools:text="上传成功" />
 
-
+            <TextView
+                android:id="@+id/tv_page_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:textColor="#333333"
+                android:textSize="16sp" />
         </LinearLayout>
 
 
