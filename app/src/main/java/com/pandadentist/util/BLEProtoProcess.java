@@ -223,6 +223,9 @@ public class BLEProtoProcess {
     public int getPagesSize() {
         return pagesSize-1;
     }
+    public void setPageSize(int i){
+        this.pagesSize = i;
+    }
 
     public int interp(byte[] response) {
         ByteBuffer data = ByteBuffer.wrap(response).order(ByteOrder.LITTLE_ENDIAN);
@@ -272,7 +275,8 @@ public class BLEProtoProcess {
                 logBuilder.append(time);
 
                 this.result.addElement(response);
-                this.buffer.put(index, Bytes.copyOf(response, 0, 20));
+//                this.buffer.put(index, Bytes.copyOf(response, 0, 20));
+                this.buffer.clear();
                 break;
             case BLE_DATA_RECEIVER:     //1
             case BLE_RESULT_RECEIVER:

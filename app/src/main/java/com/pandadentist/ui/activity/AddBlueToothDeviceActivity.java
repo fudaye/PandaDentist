@@ -6,8 +6,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -16,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -32,6 +29,7 @@ import android.widget.Toast;
 
 import com.pandadentist.R;
 import com.pandadentist.config.Constants;
+import com.pandadentist.entity.DeviceListEntity;
 import com.pandadentist.entity.WXEntity;
 import com.pandadentist.listener.OnItemClickListener;
 import com.pandadentist.listener.OnZhenListener;
@@ -113,6 +111,7 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
     private BluetoothLeScanner bluetoothLeScanner;
     private String macAddress;
     private Animation circle_anim;
+    private List<DeviceListEntity.DevicesBean> data = new ArrayList<>();
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -179,6 +178,8 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
             }
         });
 
+        getDeviceList();
+
     }
 
     @Override
@@ -199,8 +200,13 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
             public void onItemClick(View v, int position) {
                 // 先绑定，在连接蓝牙
                 // 绑定蓝牙设备
-                String deviceAddress = devices.get(position).getAddress();
-                bindDevice(deviceAddress);
+                if(data.size() == 0 ){
+                    String deviceAddress = devices.get(position).getAddress();
+                    bindDevice(deviceAddress);
+                }else{
+                    Toasts.showShort("一个账户只能绑定一个设备，请先解除绑定！");
+                }
+
 
             }
         });
@@ -211,7 +217,7 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
         });
         //扫描
         scanBlueDecvice();
-        service_init();
+//        service_init();
     }
 
 //    //UART service connected/disconnected
@@ -233,95 +239,92 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
 //    };
 
     Timer timer = null;
-    private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
-
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Log.d(TAG, "action-->" + action);
-            if (action.equals(UartService.ACTION_GATT_CONNECTED)) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toasts.showShort("蓝牙连接成功");
-//                        mState = UART_PROFILE_CONNECTED;
-//                        bleProtoProcess.clearLog();
-                        rv.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dismiss();
-                                Log.d("writeRXCharacteristic$$", "writeRXCharacteristic$$");
-                                mService.writeRXCharacteristic(bleProtoProcess.getRequests((byte) 1, (byte) 0));
-                                bleProtoProcess.setIsreqenddatas(false);
-                                bleProtoProcess.setHasrecieved(false);
-                            }
-                        }, 2000);
-                    }
-                });
-            }
-            if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        dismiss();
-                        Toasts.showShort("断开蓝牙连接");
-//                        mState = UART_PROFILE_DISCONNECTED;
-                        mService.close();
-                    }
-                });
-            }
-            if (action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED)) {
-                mService.enableTXNotification();
-            }
-            if (action.equals(UartService.ACTION_DATA_AVAILABLE)) {
-                timecount = 0;
-                final byte[] txValue = intent.getByteArrayExtra(UartService.EXTRA_DATA);
-                int status = bleProtoProcess.interp(txValue);
-
-                switch (status) {
-                    case BLEProtoProcess.BLE_DATA_START:
-                    case BLEProtoProcess.BLE_RESULT_START:
-                        bleProtoProcess.setHasrecieved(true);
-                        showUpload();
-                        runtype = 1;
-                        timer = new Timer();
-                        timer.schedule(new DataProcessTimer(), 0, 200);
-                        break;
-                    case BLEProtoProcess.BLE_DATA_RECEIVER:
-                        break;
-                    case BLEProtoProcess.BLE_DATA_END:
-                    case BLEProtoProcess.BLE_RESULT_END:
-                        runtype = 2;
-                        timecount = 100;
-                        break;
-                    case BLEProtoProcess.BLE_MISSED_RECEIVER:
-                        break;
-                    case BLEProtoProcess.BLE_MISSED_END:
-                        Log.d(TAG, "丢失帧接受完毕");
-                        timecount = 100;
-                        break;
-                    case BLEProtoProcess.BLE_NO_SYNC://没有同步数据
-                        if (bleProtoProcess.isHasrecieved()) {
-                            bleProtoProcess.setIsreqenddatas(true);
-                            mService.writeRXCharacteristic(bleProtoProcess.getRequests((byte) 0, (byte) 1));
-                        } else {
-                            showUpload();
-                            ivUploadLoading.clearAnimation();
-                            tvUploadTip.setText("设备暂无最新数据");
-                            tvPercent.setText("100%");
-                            colorProgressBar.setProgressColor();
-                        }
-                        break;
-                }
-
-
-            }
-            //*********************//
-            if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART)) {
-                showMessage("Device doesn't support UART. Disconnecting");
-                mService.disconnect();
-            }
-
-
-        }
-    };
+//    private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
+//
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            Log.d(TAG, "action-->" + action);
+//            if (action.equals(UartService.ACTION_GATT_CONNECTED)) {
+//                runOnUiThread(new Runnable() {
+//                    public void run() {
+//                        Toasts.showShort("蓝牙连接成功");
+//                        //TODO 通知首页刷新设备列表
+//                        Intent intent = new Intent(UartService.DEVICE_REFRESH_FALG);
+//                        LocalBroadcastManager.getInstance(AddBlueToothDeviceActivity.this).sendBroadcast(intent);
+//                        rv.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                dismiss();
+//                                Log.d("writeRXCharacteristic$$", "writeRXCharacteristic$$");
+//                                mService.writeRXCharacteristic(bleProtoProcess.getRequests((byte) 1, (byte) 0));
+//                                bleProtoProcess.setIsreqenddatas(false);
+//                                bleProtoProcess.setHasrecieved(false);
+//                            }
+//                        }, 2000);
+//                    }
+//                });
+//            }
+//            if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
+//                runOnUiThread(new Runnable() {
+//                    public void run() {
+//                        dismiss();
+//                        Toasts.showShort("断开蓝牙连接");
+////                        mState = UART_PROFILE_DISCONNECTED;
+//                        mService.close();
+//                    }
+//                });
+//            }
+//            if (action.equals(UartService.ACTION_GATT_SERVICES_DISCOVERED)) {
+//                mService.enableTXNotification();
+//            }
+//            if (action.equals(UartService.ACTION_DATA_AVAILABLE)) {
+//                timecount = 0;
+//                final byte[] txValue = intent.getByteArrayExtra(UartService.EXTRA_DATA);
+//                int status = bleProtoProcess.interp(txValue);
+//
+//                switch (status) {
+//                    case BLEProtoProcess.BLE_DATA_START:
+//                    case BLEProtoProcess.BLE_RESULT_START:
+//                        bleProtoProcess.setHasrecieved(true);
+//                        showUpload();
+//                        runtype = 1;
+//                        timer = new Timer();
+//                        timer.schedule(new DataProcessTimer(), 0, 200);
+//                        break;
+//                    case BLEProtoProcess.BLE_DATA_RECEIVER:
+//                        break;
+//                    case BLEProtoProcess.BLE_DATA_END:
+//                    case BLEProtoProcess.BLE_RESULT_END:
+//                        runtype = 2;
+//                        timecount = 100;
+//                        break;
+//                    case BLEProtoProcess.BLE_MISSED_RECEIVER:
+//                        break;
+//                    case BLEProtoProcess.BLE_MISSED_END:
+//                        Log.d(TAG, "丢失帧接受完毕");
+//                        timecount = 100;
+//                        break;
+//                    case BLEProtoProcess.BLE_NO_SYNC://没有同步数据
+//                        if (bleProtoProcess.isHasrecieved()) {
+//                            bleProtoProcess.setIsreqenddatas(true);
+//                            mService.writeRXCharacteristic(bleProtoProcess.getRequests((byte) 0, (byte) 1));
+//                        } else {
+//                            showUpload();
+//                            ivUploadLoading.clearAnimation();
+//                            tvUploadTip.setText("设备暂无最新数据");
+//                            tvPercent.setText("100%");
+//                            colorProgressBar.setProgressColor();
+//                        }
+//                        break;
+//                }
+//            }
+//            //*********************//
+//            if (action.equals(UartService.DEVICE_DOES_NOT_SUPPORT_UART)) {
+//                showMessage("Device doesn't support UART. Disconnecting");
+//                mService.disconnect();
+//            }
+//        }
+//    };
 
     private boolean checkData() {
         try {
@@ -363,11 +366,11 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
         return true;
     }
 
-    private void service_init() {
+//    private void service_init() {
 //        Intent bindIntent = new Intent(this, UartService.class);
 //        isBind = bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-        LocalBroadcastManager.getInstance(this).registerReceiver(UARTStatusChangeReceiver, makeGattUpdateIntentFilter());
-    }
+//        LocalBroadcastManager.getInstance(this).registerReceiver(UARTStatusChangeReceiver, makeGattUpdateIntentFilter());
+//    }
 
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
@@ -390,7 +393,6 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     String deviceAddress = data.getStringExtra(BluetoothDevice.EXTRA_DEVICE);
                     mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
-
                     Log.d(TAG, "... onActivityResultdevice.address==" + mDevice + "mserviceValue" + mService);
                     ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName() + " - connecting");
                     mService.connect(deviceAddress);
@@ -537,7 +539,7 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(UARTStatusChangeReceiver);
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(UARTStatusChangeReceiver);
 //        if (isBind) {
 //            unbindService(mServiceConnection);
 //        }
@@ -621,7 +623,6 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
     };
 
     private void bindDevice(String mac) {
-        showProgress();
         APIService api = new APIFactory().create(APIService.class);
         Subscription s = api.bindDevice(mac.replaceAll(":", ""), SPUitl.getToken())
                 .subscribeOn(Schedulers.io())
@@ -631,16 +632,52 @@ public class AddBlueToothDeviceActivity extends SwipeRefreshBaseActivity {
                     public void call(WXEntity wxEntity) {
                         mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mac);
                         macAddress = mac;
-                        if (mService != null) {
-                            mService.disconnect();
-                            mService.connect(mac);
-                        }
+                        Bundle b = new Bundle();
+                        b.putString(BluetoothDevice.EXTRA_DEVICE, macAddress);
+
+                        Intent result = new Intent();
+                        result.putExtras(b);
+                        setResult(Activity.RESULT_OK, result);
+                        finish();
+                        //TODO 返回首页更新数据
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         dismiss();
                         Toasts.showShort("服务器连接失败！请检查手机网络！");
+                        Log.d("throwable", "throwable-->" + throwable.toString());
+                    }
+                });
+        addSubscription(s);
+    }
+
+    private void getDeviceList() {
+        showProgress();
+        APIService api = new APIFactory().create(APIService.class);
+        Subscription s = api.getDeviceList(SPUitl.getToken())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<DeviceListEntity>() {
+                    @Override
+                    public void call(DeviceListEntity deviceListEntity) {
+                        dismiss();
+                        if (Constants.SUCCESS == deviceListEntity.getCode()) {
+                            for (DeviceListEntity.DevicesBean db : deviceListEntity.getDevices()) {
+                                if (!db.getDeviceid().contains(":")) {
+                                    data.add(db);
+                                }
+                            }
+                            Log.d(TAG,"size-->"+data.size());
+                        } else {
+                            Toasts.showShort(deviceListEntity.getMessage());
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Toasts.showShort("请检查网络!");
+                        dismiss();
                         Log.d("throwable", "throwable-->" + throwable.toString());
                     }
                 });

@@ -38,7 +38,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.RealTimeBrushToothActivity">
+        <activity android:name=".ui.activity.RealTimeBrushToothActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -46,8 +49,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="android.panda.toothbrush"
-                    android:scheme="app"/>
+                    android:host="tooth"
+                    android:scheme="easylinkage"/>
             </intent-filter>
         </activity>
 
